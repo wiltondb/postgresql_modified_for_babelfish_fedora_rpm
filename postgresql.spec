@@ -337,7 +337,6 @@ benchmarks.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
-%patch7 -p1 -b .atomic-aarch64
 
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
@@ -356,6 +355,9 @@ tar xfj %{SOURCE3}
 cp -p config/config.guess postgresql-%{prevversion}/config/config.guess
 cp -p config/config.sub postgresql-%{prevversion}/config/config.sub
 %endif
+
+# the %%{SOURCE3} must be unpacked before this patch is applied
+%patch7 -p1 -b .atomic-aarch64
 
 # remove .gitignore files to ensure none get into the RPMs (bug #642210)
 find . -type f -name .gitignore | xargs rm
@@ -1106,6 +1108,9 @@ fi
 %endif
 
 %changelog
+* Thu Jun 13 2013 Pavel Raiskup <praiskup@redhat.com> - 9.2.4-2
+- add atomic operations support for aarch64 to preupgrade version also (#970661)
+
 * Thu Jun 13 2013 Jan Stanek <jstanek@redhat.com> - 9.2.4-3
 - added patch for manual pages (#948933)
 
