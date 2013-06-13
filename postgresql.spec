@@ -337,6 +337,7 @@ benchmarks.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch8 -p1 -b .man-page-day-fixes
 
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
@@ -1110,6 +1111,7 @@ fi
 %changelog
 * Thu Jun 13 2013 Pavel Raiskup <praiskup@redhat.com> - 9.2.4-2
 - add atomic operations support for aarch64 to preupgrade version also (#970661)
+- apply the forgotten man-page-day patch (#948933)
 
 * Thu Jun 13 2013 Jan Stanek <jstanek@redhat.com> - 9.2.4-3
 - added patch for manual pages (#948933)
