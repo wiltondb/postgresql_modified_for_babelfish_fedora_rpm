@@ -58,7 +58,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.2
 Version: 9.2.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -107,6 +107,9 @@ Patch6: postgresql-var-run-socket.patch
 # ~> upstream (612ecf311b)
 # ~> #970661
 Patch7: postgresql-9.2.4-aarch64-atomic.patch
+
+# Comments for these patches are in the patch files.
+Patch8: postgresql-man.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk
 BuildRequires: perl(ExtUtils::Embed), perl-devel
@@ -1103,6 +1106,9 @@ fi
 %endif
 
 %changelog
+* Thu Jun 13 2013 Jan Stanek <jstanek@redhat.com> - 9.2.4-3
+- added patch for manual pages (#948933)
+
 * Tue Jun 11 2013 Pavel Raiskup <praiskup@redhat.com> - 9.2.4-2
 - postgresql-setup: don't create whole path to server's data to make sure that
   the parent directory has correct permissions (#972425)
