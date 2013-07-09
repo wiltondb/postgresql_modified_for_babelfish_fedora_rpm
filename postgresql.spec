@@ -1109,10 +1109,10 @@ fi
 %endif
 
 %changelog
-* Tue Jul 09 2013 Pavel Raiskup <praiskup@redhat.com> - 9.3.4-4
+* Tue Jul 09 2013 Pavel Raiskup <praiskup@redhat.com> - 9.2.4-4
 - do not use -b for manual page fixes
 
-* Thu Jun 20 2013 Pavel Raiskup <praiskup@redhat.com> - 9.3.4-3
+* Thu Jun 20 2013 Pavel Raiskup <praiskup@redhat.com> - 9.2.4-3
 - fix README.rpm-dist for the bug (#969050)
 - replace hard-wired path with %%{_datadir}
 
