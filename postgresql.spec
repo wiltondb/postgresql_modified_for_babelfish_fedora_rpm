@@ -111,6 +111,10 @@ Patch7: postgresql-9.2.4-aarch64-atomic.patch
 # Comments for these patches are in the patch files.
 Patch8: postgresql-man.patch
 
+# Build even with Perl 5.18+
+# ~> upstream (035a5e1e8c34)
+Patch9: postgresql-9.2.4-perl-5.18.patch
+
 BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk
 BuildRequires: perl(ExtUtils::Embed), perl-devel
 BuildRequires: readline-devel zlib-devel
@@ -338,6 +342,7 @@ benchmarks.
 %patch5 -p1
 %patch6 -p1
 %patch8 -p1
+%patch9 -p1
 
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
@@ -1109,6 +1114,9 @@ fi
 %endif
 
 %changelog
+* Tue Jul 23 2013 Pavel Raiskup <praiskup@redhat.com> - 9.2.4-5
+- fix testsuite to allow build against Perl 5.18
+
 * Thu Jul 18 2013 Petr Pisar <ppisar@redhat.com> - 9.2.4-5
 - Perl 5.18 rebuild
 
