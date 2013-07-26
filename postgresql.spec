@@ -29,7 +29,7 @@
 # The base package, the libs package, the devel package, and the server package
 # always get built.
 
-%global beta 0
+%{!?beta:%global beta 0}
 %{?beta:%global __os_install_post /usr/lib/rpm/brp-compress}
 
 %{!?test:%global test 1}
@@ -577,6 +577,10 @@ rm -f src/tutorial/GNUmakefile
 	./configure --build=%{_build} --host=%{_host} \
 		--prefix=%{_libdir}/pgsql/postgresql-%{prevmajorversion} \
 		--disable-rpath \
+%if %beta
+		--enable-debug \
+		--enable-cassert \
+%endif
 		--with-system-tzdata=/usr/share/zoneinfo
 
 	make %{?_smp_mflags} all
