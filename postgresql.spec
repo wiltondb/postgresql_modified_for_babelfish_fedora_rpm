@@ -58,7 +58,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.2
 Version: 9.2.4
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -733,6 +733,7 @@ install -m 644 %{SOURCE15} $RPM_BUILD_ROOT/var/lib/pgsql/.bash_profile
 
 # Fix some more documentation
 cp %{SOURCE8} README.rpm-dist
+rm -rf doc/html # HACK! allow 'rpmbuild -bi --short-circuit'
 mv $RPM_BUILD_ROOT%{_docdir}/pgsql/html doc
 rm -rf $RPM_BUILD_ROOT%{_docdir}/pgsql
 
@@ -1121,6 +1122,9 @@ fi
 %endif
 
 %changelog
+* Tue Aug 06 2013 Pavel Raiskup <praiskup@redhat.com> - 9.2.4-8
+- allow `rpmbuild -bi --short-circuit`
+
 * Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 9.2.4-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
