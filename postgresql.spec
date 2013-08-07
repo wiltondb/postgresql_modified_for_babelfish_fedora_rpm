@@ -53,12 +53,14 @@
 %{!?selinux:%global selinux 1}
 %{!?runselftest:%global runselftest 1}
 
+# _pkgdocdir is defined in fc20+, remove once f19 is dead
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.2
 Version: 9.2.4
-Release: 8%{?dist}
+Release: 9%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -636,7 +638,7 @@ install -m 755 postgresql-setup $RPM_BUILD_ROOT%{_bindir}/postgresql-setup
 # prep the startup check script, including insertion of some values it needs
 sed -e 's|^PGVERSION=.*$|PGVERSION=%{version}|' \
 	-e 's|^PREVMAJORVERSION=.*$|PREVMAJORVERSION=%{prevmajorversion}|' \
-	-e 's|^PGDOCDIR=.*$|PGDOCDIR=%{_docdir}/%{name}-%{version}|' \
+	-e 's|^PGDOCDIR=.*$|PGDOCDIR=%{_pkgdocdir}|' \
 	<%{SOURCE4} >postgresql-check-db-dir
 touch -r %{SOURCE4} postgresql-check-db-dir
 install -m 755 postgresql-check-db-dir $RPM_BUILD_ROOT%{_bindir}/postgresql-check-db-dir
@@ -1122,6 +1124,9 @@ fi
 %endif
 
 %changelog
+* Wed Aug 07 2013 Pavel Raiskup <praiskup@redhat.com> - 9.2.4-9
+- generate links docdir links in postgresql-check-db-dir correctly (#994048)
+
 * Tue Aug 06 2013 Pavel Raiskup <praiskup@redhat.com> - 9.2.4-8
 - allow `rpmbuild -bi --short-circuit`
 
