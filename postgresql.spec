@@ -60,7 +60,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.2
 Version: 9.2.4
-Release: 10%{?dist}
+Release: 11%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -117,6 +117,14 @@ Patch9: postgresql-9.2.4-perl-5.18.patch
 # ~> #970661
 Patch10: postgresql-9.2.4-aarch64-atomic.patch
 Patch11: postgresql-9.2.4-aarch64-atomic-upgrade.patch
+
+# When user complicates access of 'postgres' user to the database, the
+# pg_upgrade can left the old server running - and re-run of pg_upgrade thus
+# does not help.  This patch stops the server in described scenario properly.
+# ~> not yet upstream, patch by Bruce Momjian:
+# ~> http://www.postgresql.org/message-id/20130812193347.GD12510@momjian.us
+# ~> #896161
+Patch12: postgresql-9.2.4-upgrade-and-perm-problems.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk
 BuildRequires: perl(ExtUtils::Embed), perl-devel
@@ -347,6 +355,7 @@ benchmarks.
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
+%patch12 -p1
 
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
@@ -1128,6 +1137,9 @@ fi
 %endif
 
 %changelog
+* Thu Aug 15 2013 Pavel Raiskup <praiskup@redhat.com> - 9.2.4-11
+- upgrade: stop old server in case of permissions problem (#896161)
+
 * Mon Aug 12 2013 Pavel Raiskup <praiskup@redhat.com> - 9.2.4-10
 - disable aggressive loop optimizations for old codebase (#993532)
 
