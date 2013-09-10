@@ -1,4 +1,7 @@
-# PostgreSQL manual page completion
+PostgreSQL ecpg/initdb manual page fixes
+
+This was generated based on automatic Red Hat manual page scan (private
+RHBZ#948933).
 
 ### ecpg ###
 
@@ -11,7 +14,7 @@ diff -up postgresql-9.2.4/doc/src/sgml/man1/ecpg.1.broken postgresql-9.2.4/doc/s
  .PP
 +\fB\-h \fR
 +.RS 4
-+Parse a header file, this option includes otion \fB\-c\fR\&.
++Parse a header file, this option includes option \fB\-c\fR\&.
 +.RE
 +.PP
  \fB\-i\fR

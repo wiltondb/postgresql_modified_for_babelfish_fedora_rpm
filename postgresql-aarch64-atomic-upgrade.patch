@@ -1,8 +1,16 @@
-diff --git a/postgresql-9.1.9/src/include/storage/s_lock.h b/postgresql-9.1.9/src/include/storage/s_lock.h
-index 987fb9c..1ba718c 100644
---- a/postgresql-9.1.9/src/include/storage/s_lock.h
-+++ b/postgresql-9.1.9/src/include/storage/s_lock.h
-@@ -296,6 +296,29 @@ tas(volatile slock_t *lock)
+Add support for atomic operations TAS/S_UNLOCK in aarch64
+
+This was already added to upstream 9.3.0+ version but we need to add this into
+pre-upgrade postgresql version (until we are not upgrading also from 9.3.0+).
+
+~> upstream (612ecf311b)
+~> #970661
+
+diff --git a/src/include/storage/s_lock.h b/src/include/storage/s_lock.h
+index d4a783f..29124b1 100644
+--- a/src/include/storage/s_lock.h
++++ b/src/include/storage/s_lock.h
+@@ -335,6 +335,29 @@ tas(volatile slock_t *lock)
  #endif	 /* __arm__ */
  
  
