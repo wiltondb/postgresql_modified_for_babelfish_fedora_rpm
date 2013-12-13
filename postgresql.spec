@@ -1122,6 +1122,9 @@ fi
 %endif
 
 %changelog
+* Fri Dec 13 2013 Pavel Raiskup <praiskup@redhat.com> - 9.3.2-2
+- lint the postgresql-setup script
+
 * Thu Dec 12 2013 Jozef Mlich <jmlich@redhat.com> - 9.3.2-2
 - don't fail if user has badly configure 'postgres' user access (#1040364)
 
