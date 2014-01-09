@@ -1126,6 +1126,7 @@ fi
 * Mon Jan 13 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.2-4
 - postgresql-setup(upgrade): don't stop old server when it can not be started
 - postgresql-setup(initdb, upgrade): add $PGSETUP_INITDB_OPTIONS
+- postgresql-setup: do not pretend 'sh' compatibility
 
 * Fri Jan 10 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.2-3
 - build with -O3 on ppc64 (private #1051075)
