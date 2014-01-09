@@ -109,7 +109,7 @@ Patch4: postgresql-config-comment.patch
 Patch5: postgresql-var-run-socket.patch
 Patch6: postgresql-man.patch
 
-BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk
+BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk help2man
 BuildRequires: perl(ExtUtils::Embed), perl-devel
 BuildRequires: readline-devel zlib-devel
 BuildRequires: systemd-units
@@ -367,6 +367,8 @@ sed -e 's|^PGVERSION=.*$|PGVERSION=%{version}|' \
 	-e 's|^README_RPM_DIST=.*$|README_RPM_DIST=%{_pkgdocdir}/%(basename %{SOURCE8})|' \
 	<%{SOURCE9} >postgresql-setup
 touch -r %{SOURCE9} postgresql-setup
+chmod +x postgresql-setup
+help2man -N -m "Postgresql RPM-dist manual" ./postgresql-setup -o postgresql-setup.1
 
 # prep the startup check script, including insertion of some values it needs
 sed -e 's|^PGVERSION=.*$|PGVERSION=%{version}|' \
@@ -634,6 +636,7 @@ install -d -m 755 $RPM_BUILD_ROOT%{_libdir}/pgsql/tutorial
 cp -p src/tutorial/* $RPM_BUILD_ROOT%{_libdir}/pgsql/tutorial
 
 install -m 755 postgresql-setup $RPM_BUILD_ROOT%{_bindir}/postgresql-setup
+install -p -m 644 postgresql-setup.1 $RPM_BUILD_ROOT%{_mandir}/man1
 
 install -m 755 postgresql-check-db-dir $RPM_BUILD_ROOT%{_bindir}/postgresql-check-db-dir
 
@@ -1041,6 +1044,7 @@ fi
 %{_mandir}/man1/pg_receivexlog.*
 %{_mandir}/man1/pg_resetxlog.*
 %{_mandir}/man1/postgres.*
+%{_mandir}/man1/postgresql-setup.*
 %{_mandir}/man1/postmaster.*
 %{_datadir}/pgsql/postgres.bki
 %{_datadir}/pgsql/postgres.description
@@ -1126,11 +1130,12 @@ fi
 %endif
 
 %changelog
-* Mon Jan 13 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.2-4
+* Mon Jan 20 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.2-4
 - postgresql-setup(upgrade): don't stop old server when it can not be started
 - postgresql-setup(initdb, upgrade): add $PGSETUP_INITDB_OPTIONS
 - postgresql-setup: do not pretend 'sh' compatibility
 - move script generation to proper place
+- postgresql-setup: document a little and genrate manual page
 
 * Fri Jan 10 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.2-3
 - build with -O3 on ppc64 (private #1051075)
