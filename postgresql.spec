@@ -359,6 +359,22 @@ cp -p config/config.sub postgresql-%{prevversion}/config/config.sub
 # remove .gitignore files to ensure none get into the RPMs (bug #642210)
 find . -type f -name .gitignore | xargs rm
 
+# prep the setup script, including insertion of some values it needs
+sed -e 's|^PGVERSION=.*$|PGVERSION=%{version}|' \
+	-e 's|^PGENGINE=.*$|PGENGINE=%{_bindir}|' \
+	-e 's|^PREVMAJORVERSION=.*$|PREVMAJORVERSION=%{prevmajorversion}|' \
+	-e 's|^PREVPGENGINE=.*$|PREVPGENGINE=%{_libdir}/pgsql/postgresql-%{prevmajorversion}/bin|' \
+	-e 's|^README_RPM_DIST=.*$|README_RPM_DIST=%{_pkgdocdir}/%(basename %{SOURCE8})|' \
+	<%{SOURCE9} >postgresql-setup
+touch -r %{SOURCE9} postgresql-setup
+
+# prep the startup check script, including insertion of some values it needs
+sed -e 's|^PGVERSION=.*$|PGVERSION=%{version}|' \
+	-e 's|^PREVMAJORVERSION=.*$|PREVMAJORVERSION=%{prevmajorversion}|' \
+	-e 's|^PGDOCDIR=.*$|PGDOCDIR=%{_pkgdocdir}|' \
+	<%{SOURCE4} >postgresql-check-db-dir
+touch -r %{SOURCE4} postgresql-check-db-dir
+
 %build
 
 # fail quickly and obviously if user tries to build as root
@@ -617,21 +633,8 @@ esac
 install -d -m 755 $RPM_BUILD_ROOT%{_libdir}/pgsql/tutorial
 cp -p src/tutorial/* $RPM_BUILD_ROOT%{_libdir}/pgsql/tutorial
 
-# prep the setup script, including insertion of some values it needs
-sed -e 's|^PGVERSION=.*$|PGVERSION=%{version}|' \
-	-e 's|^PGENGINE=.*$|PGENGINE=%{_bindir}|' \
-	-e 's|^PREVMAJORVERSION=.*$|PREVMAJORVERSION=%{prevmajorversion}|' \
-	-e 's|^PREVPGENGINE=.*$|PREVPGENGINE=%{_libdir}/pgsql/postgresql-%{prevmajorversion}/bin|' \
-	<%{SOURCE9} >postgresql-setup
-touch -r %{SOURCE9} postgresql-setup
 install -m 755 postgresql-setup $RPM_BUILD_ROOT%{_bindir}/postgresql-setup
 
-# prep the startup check script, including insertion of some values it needs
-sed -e 's|^PGVERSION=.*$|PGVERSION=%{version}|' \
-	-e 's|^PREVMAJORVERSION=.*$|PREVMAJORVERSION=%{prevmajorversion}|' \
-	-e 's|^PGDOCDIR=.*$|PGDOCDIR=%{_pkgdocdir}|' \
-	<%{SOURCE4} >postgresql-check-db-dir
-touch -r %{SOURCE4} postgresql-check-db-dir
 install -m 755 postgresql-check-db-dir $RPM_BUILD_ROOT%{_bindir}/postgresql-check-db-dir
 
 install -d $RPM_BUILD_ROOT%{_unitdir}
@@ -1127,6 +1130,7 @@ fi
 - postgresql-setup(upgrade): don't stop old server when it can not be started
 - postgresql-setup(initdb, upgrade): add $PGSETUP_INITDB_OPTIONS
 - postgresql-setup: do not pretend 'sh' compatibility
+- move script generation to proper place
 
 * Fri Jan 10 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.2-3
 - build with -O3 on ppc64 (private #1051075)
