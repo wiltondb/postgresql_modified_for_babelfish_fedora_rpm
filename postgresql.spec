@@ -64,7 +64,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.3
 Version: 9.3.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -371,17 +371,18 @@ find . -type f -name .gitignore | xargs rm
 	fi
 %endif
 
-CFLAGS="${CFLAGS:-%optflags}" ; export CFLAGS
+# Fiddling with CFLAGS.
 
+CFLAGS="${CFLAGS:-%optflags}"
+%ifarch %{power64}
+# See the bug #1051075, ppc64 should benefit from -O3
+CFLAGS=`echo $CFLAGS | xargs -n 1 | sed 's|-O2|-O3|g' | xargs -n 100`
+%endif
 # Strip out -ffast-math from CFLAGS....
 CFLAGS=`echo $CFLAGS|xargs -n 1|grep -v ffast-math|xargs -n 100`
 # Add LINUX_OOM_SCORE_ADJ=0 to ensure child processes reset postmaster's oom_score_adj
 CFLAGS="$CFLAGS -DLINUX_OOM_SCORE_ADJ=0"
-# let's try removing this kluge, it may just be a workaround for bz#520916
-# # use -O1 on sparc64 and alpha
-# %%ifarch sparc64 alpha
-# CFLAGS=`echo $CFLAGS| sed -e "s|-O2|-O1|g" `
-# %%endif
+export CFLAGS
 
 # plpython requires separate configure/build runs to build against python 2
 # versus python 3.  Our strategy is to do the python 3 run first, then make
@@ -1122,6 +1123,9 @@ fi
 %endif
 
 %changelog
+* Fri Jan 10 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.2-3
+- build with -O3 on ppc64 (private #1051075)
+
 * Fri Dec 13 2013 Pavel Raiskup <praiskup@redhat.com> - 9.3.2-2
 - lint the postgresql-setup script
 
