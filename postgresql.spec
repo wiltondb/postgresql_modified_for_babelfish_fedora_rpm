@@ -64,7 +64,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.3
 Version: 9.3.2
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -361,6 +361,7 @@ find . -type f -name .gitignore | xargs rm
 
 # prep the setup script, including insertion of some values it needs
 sed -e 's|^PGVERSION=.*$|PGVERSION=%{version}|' \
+	-e 's|^PGMAJORVERSION=.*$|PGMAJORVERSION=%{majorversion}|' \
 	-e 's|^PGENGINE=.*$|PGENGINE=%{_bindir}|' \
 	-e 's|^PREVMAJORVERSION=.*$|PREVMAJORVERSION=%{prevmajorversion}|' \
 	-e 's|^PREVPGENGINE=.*$|PREVPGENGINE=%{_libdir}/pgsql/postgresql-%{prevmajorversion}/bin|' \
@@ -1130,6 +1131,9 @@ fi
 %endif
 
 %changelog
+* Thu Jan 23 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.2-7
+- postgresql-setup: typos
+
 * Tue Jan 21 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.2-6
 - add PGSETUP_PGUPGRADE_OPTIONS env var for postgresql-setup
 
