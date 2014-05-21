@@ -64,7 +64,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.3
 Version: 9.3.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1131,6 +1131,9 @@ fi
 %endif
 
 %changelog
+* Wed May 21 2014 Jaroslav Škarvada <jskarvad@redhat.com> - 9.3.4-3
+- Rebuilt for https://fedoraproject.org/wiki/Changes/f21tcl86
+
 * Wed May 14 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.4-2
 - set basic $PATH when it is empty or unset, (#1097317)
 
