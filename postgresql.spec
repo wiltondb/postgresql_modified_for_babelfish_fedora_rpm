@@ -64,7 +64,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.3
 Version: 9.3.4
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -108,6 +108,7 @@ Patch3: postgresql-perl-rpath.patch
 Patch4: postgresql-config-comment.patch
 Patch5: postgresql-var-run-socket.patch
 Patch6: postgresql-man.patch
+Patch7: postgresql-python34.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk help2man
 BuildRequires: perl(ExtUtils::Embed), perl-devel
@@ -335,6 +336,7 @@ benchmarks.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
@@ -1131,6 +1133,9 @@ fi
 %endif
 
 %changelog
+* Fri May 23 2014 Honza Horak <hhorak@redhat.com> - 9.3.4-4
+- Change plpython_do test a bit so it is universal for all python versions
+
 * Wed May 21 2014 Jaroslav Škarvada <jskarvad@redhat.com> - 9.3.4-3
 - Rebuilt for https://fedoraproject.org/wiki/Changes/f21tcl86
 
