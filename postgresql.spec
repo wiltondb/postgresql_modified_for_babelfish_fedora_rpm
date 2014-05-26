@@ -64,7 +64,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.3
 Version: 9.3.4
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1133,6 +1133,9 @@ fi
 %endif
 
 %changelog
+* Mon May 26 2014 Honza Horak <hhorak@redhat.com> - 9.3.4-5
+- Rebuild for Python 3.4
+
 * Fri May 23 2014 Honza Horak <hhorak@redhat.com> - 9.3.4-4
 - Change plpython_do test a bit so it is universal for all python versions
 
