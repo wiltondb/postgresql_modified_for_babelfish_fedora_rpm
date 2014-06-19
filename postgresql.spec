@@ -64,7 +64,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.3
 Version: 9.3.4
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -402,6 +402,7 @@ CFLAGS=`echo $CFLAGS | xargs -n 1 | sed 's|-O2|-O3|g' | xargs -n 100`
 # Strip out -ffast-math from CFLAGS....
 CFLAGS=`echo $CFLAGS|xargs -n 1|grep -v ffast-math|xargs -n 100`
 # Add LINUX_OOM_SCORE_ADJ=0 to ensure child processes reset postmaster's oom_score_adj
+# (this define will be useless in Postgres 9.5 and later)
 CFLAGS="$CFLAGS -DLINUX_OOM_SCORE_ADJ=0"
 export CFLAGS
 
@@ -1133,6 +1134,9 @@ fi
 %endif
 
 %changelog
+* Thu Jun 19 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.4-7
+- OOM handling compatible with 9.5+, by Tom Lane (#1110969)
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 9.3.4-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
