@@ -64,7 +64,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.3
 Version: 9.3.4
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -220,6 +220,8 @@ and maintain PostgreSQL databases.
 Summary: Extra documentation for PostgreSQL
 Group: Applications/Databases
 Requires: %{name}%{?_isa} = %{version}-%{release}
+# Just for more intuitive documentation installation
+Provides: %{name}-doc = %{version}-%{release}
 
 %description docs
 The postgresql-docs package contains some additional documentation for
@@ -1134,6 +1136,9 @@ fi
 %endif
 
 %changelog
+* Wed Jun 25 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.4-8
+- provide postgresql-doc for postgresql-docs package (#1086420)
+
 * Thu Jun 19 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.4-7
 - OOM handling compatible with 9.5+, by Tom Lane (#1110969)
 
