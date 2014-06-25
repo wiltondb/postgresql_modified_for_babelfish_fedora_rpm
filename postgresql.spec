@@ -865,7 +865,6 @@ fi
 %doc doc/KNOWN_BUGS doc/MISSING_FEATURES doc/TODO
 %doc COPYRIGHT README HISTORY doc/bug.template
 %doc README.rpm-dist
-%doc doc/html
 %{_bindir}/clusterdb
 %{_bindir}/createdb
 %{_bindir}/createlang
@@ -902,6 +901,7 @@ fi
 %files docs
 %doc *-US.pdf
 %{_libdir}/pgsql/tutorial/
+%doc doc/html
 
 %files contrib
 %{_datadir}/pgsql/extension/adminpack*
@@ -1138,6 +1138,7 @@ fi
 %changelog
 * Wed Jun 25 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.4-8
 - provide postgresql-doc for postgresql-docs package (#1086420)
+- move html documentation to *-docs subpackage (#1086420)
 
 * Thu Jun 19 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.4-7
 - OOM handling compatible with 9.5+, by Tom Lane (#1110969)
