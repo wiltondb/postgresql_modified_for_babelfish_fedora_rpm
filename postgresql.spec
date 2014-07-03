@@ -60,6 +60,9 @@
 # _pkgdocdir is defined in fc20+, remove once f19 is dead
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
+# https://fedoraproject.org/wiki/Packaging:Guidelines#Packaging_of_Additional_RPM_Macros
+%global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
+
 Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.3
@@ -208,6 +211,12 @@ Requires(postun): systemd-units
 # should fire just after this package is installed.
 Requires(post): systemd-sysv
 Requires(post): chkconfig
+# Packages which provide postgresql plugins should build-require
+# postgresql-devel and require
+# postgresql-server(:MODULE_COMPAT_%%{postgresql_major}).
+# This will automatically guard against incompatible server & plugin
+# installation (#1008939, #1007840)
+Provides: %{name}-server(:MODULE_COMPAT_%{majorversion})
 
 %description server
 PostgreSQL is an advanced Object-Relational database management system (DBMS).
@@ -622,6 +631,10 @@ make DESTDIR=$RPM_BUILD_ROOT install-world
 # make sure these directories exist even if we suppressed all contrib modules
 install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/pgsql/contrib
 install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/pgsql/extension
+
+echo "%%%{name}_major %{majorversion}" > macros.%{name}
+install -D -m 644 macros.%{name} \
+    $RPM_BUILD_ROOT%{macrosdir}/%{name}.macros
 
 # multilib header hack; note pg_config.h is installed in two places!
 # we only apply this to known Red Hat multilib arches, per bug #177564
@@ -1090,6 +1103,7 @@ fi
 %{_libdir}/pkgconfig/*.pc
 %{_mandir}/man1/ecpg.*
 %{_mandir}/man3/SPI_*
+%{macrosdir}/*
 
 %if %upgrade
 %files upgrade
@@ -1136,9 +1150,11 @@ fi
 %endif
 
 %changelog
-* Wed Jun 25 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.4-8
+* Fri Jul 18 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.4-8
 - provide postgresql-doc for postgresql-docs package (#1086420)
 - move html documentation to *-docs subpackage (#1086420)
+- provide postgresql-server(:MODULE_COMPAT_%%{postgresql_major}) to guard
+  against incompatible plugin installation (#1008939)
 
 * Thu Jun 19 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.4-7
 - OOM handling compatible with 9.5+, by Tom Lane (#1110969)
