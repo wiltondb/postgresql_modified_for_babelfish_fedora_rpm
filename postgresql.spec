@@ -66,8 +66,8 @@
 Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.3
-Version: 9.3.4
-Release: 8%{?dist}
+Version: 9.3.5
+Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -82,7 +82,7 @@ Url: http://www.postgresql.org/
 # in-place upgrade of an old database.  In most cases it will not be critical
 # that this be kept up with the latest minor release of the previous series;
 # but update when bugs affecting pg_dump output are fixed.
-%global prevversion 9.2.8
+%global prevversion 9.2.9
 %global prevmajorversion 9.2
 
 Source0: ftp://ftp.postgresql.org/pub/source/v%{version}/postgresql-%{version}.tar.bz2
@@ -104,6 +104,9 @@ Source13: postgresql.tmpfiles.d
 Source14: postgresql.pam
 Source15: postgresql-bashprofile
 
+Source16: ftp://ftp.postgresql.org/pub/source/v%{version}/postgresql-%{version}.tar.bz2.sha256
+Source17: ftp://ftp.postgresql.org/pub/source/v%{version}/postgresql-%{prevversion}.tar.bz2.sha256
+
 # Comments for these patches are in the patch files.
 Patch1: rpm-pgsql.patch
 Patch2: postgresql-logging.patch
@@ -111,7 +114,6 @@ Patch3: postgresql-perl-rpath.patch
 Patch4: postgresql-config-comment.patch
 Patch5: postgresql-var-run-socket.patch
 Patch6: postgresql-man.patch
-Patch7: postgresql-python34.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk help2man
 BuildRequires: perl(ExtUtils::Embed), perl-devel
@@ -340,14 +342,14 @@ benchmarks.
 %endif
 
 %prep
-%setup -q 
+( cd %_sourcedir; sha256sum -c %{SOURCE16}; sha256sum -c %{SOURCE17} )
+%setup -q
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
-%patch7 -p1
 
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
@@ -1150,6 +1152,10 @@ fi
 %endif
 
 %changelog
+* Tue Jul 22 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.5-1
+- update to 9.3.5 per release notes
+  http://www.postgresql.org/docs/9.3/static/release-9-3-5.html
+
 * Fri Jul 18 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.4-8
 - provide postgresql-doc for postgresql-docs package (#1086420)
 - move html documentation to *-docs subpackage (#1086420)
