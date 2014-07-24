@@ -67,7 +67,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.3
 Version: 9.3.5
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -104,8 +104,11 @@ Source13: postgresql.tmpfiles.d
 Source14: postgresql.pam
 Source15: postgresql-bashprofile
 
+# Those here are just to enforce packagers check that the tarball was downloaded
+# correctly.  Also, this allows us check that packagers-only tarballs do not
+# differ with publicly released ones.
 Source16: ftp://ftp.postgresql.org/pub/source/v%{version}/postgresql-%{version}.tar.bz2.sha256
-Source17: ftp://ftp.postgresql.org/pub/source/v%{version}/postgresql-%{prevversion}.tar.bz2.sha256
+Source17: ftp://ftp.postgresql.org/pub/source/v%{prevversion}/postgresql-%{prevversion}.tar.bz2.sha256
 
 # Comments for these patches are in the patch files.
 Patch1: rpm-pgsql.patch
@@ -1152,6 +1155,9 @@ fi
 %endif
 
 %changelog
+* Thu Jul 24 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.5-2
+- fix the prevversion sum link and comment a little
+
 * Tue Jul 22 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.5-1
 - update to 9.3.5 per release notes
   http://www.postgresql.org/docs/9.3/static/release-9-3-5.html
