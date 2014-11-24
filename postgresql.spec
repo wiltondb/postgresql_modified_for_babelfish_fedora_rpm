@@ -1,7 +1,7 @@
 # This is the PostgreSQL Global Development Group Official RPMset spec file,
 # or a derivative thereof.
 # Copyright 2003-2009 Lamar Owen <lowen@pari.edu> <lamar.owen@wgcr.org>
-# and others listed.
+# and others listed.                 ** vi: ts=4 sw=4 noexpandtab nosmarttab
 
 # Major Contributors:
 # ---------------
@@ -67,7 +67,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.3
 Version: 9.3.5
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -560,15 +560,33 @@ sed "s|C=\`pwd\`;|C=%{_libdir}/pgsql/tutorial;|" < src/tutorial/Makefile > src/t
 make %{?_smp_mflags} -C src/tutorial NO_PGXS=1 all
 rm -f src/tutorial/GNUmakefile
 
+test_failure=0
+
+# run_testsuite WHERE
+# -------------------
+# Run 'make check' in WHERE path.  When that command fails, return the logs
+# given by PostgreSQL build system and set 'test_failure=1'.
+
+run_testsuite()
+{
+	make -C "$1" MAX_CONNECTIONS=5 check && return 0
+
+	test_failure=1
+
+	(
+		set +x
+		find "$1" -name 'regression.diffs' | \
+		while read line; do
+			echo "=== make failure: $line ==="
+			cat "$line"
+		done
+	)
+}
+
 %if %runselftest
-	pushd src/test/regress
-	make all
-	make MAX_CONNECTIONS=5 check
-	make clean
-	popd
-	pushd src/pl
-	make MAX_CONNECTIONS=5 check
-	popd
+	run_testsuite "src/test/regress"
+	make clean -C "src/test/regress"
+	run_testsuite "src/pl"
 %if %plpython3
 	# must install Makefile.global that selects python3
 	mv src/Makefile.global src/Makefile.global.save
@@ -579,24 +597,23 @@ rm -f src/tutorial/GNUmakefile
 	# since that is the subdirectory src/pl/Makefile knows about
 	mv src/pl/plpython src/pl/plpython2
 	mv src/pl/plpython3 src/pl/plpython
-	pushd src/pl/plpython
-	make MAX_CONNECTIONS=5 check
-	popd
+
+	run_testsuite "src/pl/plpython"
+
 	# and clean up our mess
 	mv src/pl/plpython src/pl/plpython3
 	mv src/pl/plpython2 src/pl/plpython
 	mv -f src/Makefile.global.save src/Makefile.global
 %endif
-	pushd contrib
-	make MAX_CONNECTIONS=5 check
-	popd
+	run_testsuite "contrib"
 %endif
 
-# undo the "make clean" above
+# "assert(ALL_TESTS_OK)"
+test "$test_failure" -eq 0
+
 %if %test
-	pushd src/test/regress
-	make all
-	popd
+	# undo the "make clean" above
+	make all -C src/test/regress
 %endif
 
 %if %upgrade
@@ -1155,6 +1172,9 @@ fi
 %endif
 
 %changelog
+* Mon Nov 24 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.5-8
+- print regression.diffs contents to stdout (#1118392)
+
 * Mon Oct 20 2014 Pavel Raiskup <praiskup@redhat.com> - 9.3.5-7
 - be forgiving of variant spellings of locale names in pg_upgrade (#1007802)
 
