@@ -67,7 +67,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.4
 Version: 9.4.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -905,6 +905,7 @@ fi
 %{_bindir}/psql
 %{_bindir}/reindexdb
 %{_bindir}/vacuumdb
+%dir %{_libdir}/pgsql
 %{_mandir}/man1/clusterdb.*
 %{_mandir}/man1/createdb.*
 %{_mandir}/man1/createlang.*
@@ -921,14 +922,22 @@ fi
 %{_mandir}/man1/reindexdb.*
 %{_mandir}/man1/vacuumdb.*
 %{_mandir}/man7/*
-%dir %{_libdir}/pgsql
 
 %files docs
 %doc *-US.pdf
-%{_libdir}/pgsql/tutorial/
 %doc doc/html
+%{_libdir}/pgsql/tutorial/
 
 %files contrib
+%doc contrib/spi/*.example
+%{_bindir}/oid2name
+%{_bindir}/pg_archivecleanup
+%{_bindir}/pg_standby
+%{_bindir}/pg_test_fsync
+%{_bindir}/pg_test_timing
+%{_bindir}/pg_xlogdump
+%{_bindir}/pgbench
+%{_bindir}/vacuumlo
 %{_datadir}/pgsql/extension/adminpack*
 %{_datadir}/pgsql/extension/autoinc*
 %{_datadir}/pgsql/extension/btree_gin*
@@ -952,13 +961,13 @@ fi
 %{_datadir}/pgsql/extension/moddatetime*
 %{_datadir}/pgsql/extension/pageinspect*
 %{_datadir}/pgsql/extension/pg_buffercache*
-%{_datadir}/pgsql/extension/pgcrypto*
 %{_datadir}/pgsql/extension/pg_freespacemap*
 %{_datadir}/pgsql/extension/pg_prewarm*
-%{_datadir}/pgsql/extension/pgrowlocks*
 %{_datadir}/pgsql/extension/pg_stat_statements*
-%{_datadir}/pgsql/extension/pgstattuple*
 %{_datadir}/pgsql/extension/pg_trgm*
+%{_datadir}/pgsql/extension/pgcrypto*
+%{_datadir}/pgsql/extension/pgrowlocks*
+%{_datadir}/pgsql/extension/pgstattuple*
 %{_datadir}/pgsql/extension/postgres_fdw*
 %{_datadir}/pgsql/extension/refint*
 %{_datadir}/pgsql/extension/seg*
@@ -970,6 +979,7 @@ fi
 %{_datadir}/pgsql/extension/tsearch2*
 %{_datadir}/pgsql/extension/unaccent*
 %{_datadir}/pgsql/extension/worker_spi*
+%{_libdir}/pgsql/_int.so
 %{_libdir}/pgsql/adminpack.so
 %{_libdir}/pgsql/auth_delay.so
 %{_libdir}/pgsql/auto_explain.so
@@ -988,7 +998,6 @@ fi
 %{_libdir}/pgsql/fuzzystrmatch.so
 %{_libdir}/pgsql/hstore.so
 %{_libdir}/pgsql/insert_username.so
-%{_libdir}/pgsql/_int.so
 %{_libdir}/pgsql/isn.so
 %{_libdir}/pgsql/lo.so
 %{_libdir}/pgsql/ltree.so
@@ -996,12 +1005,12 @@ fi
 %{_libdir}/pgsql/pageinspect.so
 %{_libdir}/pgsql/passwordcheck.so
 %{_libdir}/pgsql/pg_buffercache.so
-%{_libdir}/pgsql/pgcrypto.so
 %{_libdir}/pgsql/pg_freespacemap.so
-%{_libdir}/pgsql/pgrowlocks.so
 %{_libdir}/pgsql/pg_stat_statements.so
-%{_libdir}/pgsql/pgstattuple.so
 %{_libdir}/pgsql/pg_trgm.so
+%{_libdir}/pgsql/pgcrypto.so
+%{_libdir}/pgsql/pgrowlocks.so
+%{_libdir}/pgsql/pgstattuple.so
 %{_libdir}/pgsql/postgres_fdw.so
 %{_libdir}/pgsql/refint.so
 %{_libdir}/pgsql/seg.so
@@ -1014,6 +1023,16 @@ fi
 %{_libdir}/pgsql/tsearch2.so
 %{_libdir}/pgsql/unaccent.so
 %{_libdir}/pgsql/worker_spi.so
+%{_mandir}/man1/oid2name.*
+%{_mandir}/man1/pg_archivecleanup.*
+%{_mandir}/man1/pg_recvlogical.*
+%{_mandir}/man1/pg_standby.*
+%{_mandir}/man1/pg_test_fsync.*
+%{_mandir}/man1/pg_test_timing.*
+%{_mandir}/man1/pg_xlogdump.*
+%{_mandir}/man1/pgbench.*
+%{_mandir}/man1/vacuumlo.*
+%{_mandir}/man3/dblink*
 %if %selinux
 %{_datadir}/pgsql/contrib/sepgsql.sql
 %{_libdir}/pgsql/sepgsql.so
@@ -1030,41 +1049,15 @@ fi
 %{_datadir}/pgsql/extension/xml2*
 %{_libdir}/pgsql/pgxml.so
 %endif
-%{_bindir}/oid2name
-%{_bindir}/pg_archivecleanup
-%{_bindir}/pg_standby
-%{_bindir}/pg_test_fsync
-%{_bindir}/pg_test_timing
-%{_bindir}/pg_xlogdump
-%{_bindir}/pgbench
-%{_bindir}/vacuumlo
-%{_mandir}/man1/oid2name.*
-%{_mandir}/man1/pg_archivecleanup.*
-%{_mandir}/man1/pgbench.*
-%{_mandir}/man1/pg_recvlogical.*
-%{_mandir}/man1/pg_standby.*
-%{_mandir}/man1/pg_test_fsync.*
-%{_mandir}/man1/pg_test_timing.*
-%{_mandir}/man1/pg_xlogdump.*
-%{_mandir}/man1/vacuumlo.*
-%{_mandir}/man3/dblink*
-%doc contrib/spi/*.example
 
 %files libs -f libs.lst
 %doc COPYRIGHT
-%{_libdir}/libpq.so.*
 %{_libdir}/libecpg.so.*
-%{_libdir}/libpgtypes.so.*
 %{_libdir}/libecpg_compat.so.*
+%{_libdir}/libpgtypes.so.*
+%{_libdir}/libpq.so.*
 
 %files server -f server.lst
-%{_unitdir}/postgresql.service
-%{_unitdir}/postgresql@.service
-%dir /usr/libexec/initscripts/legacy-actions/postgresql
-/usr/libexec/initscripts/legacy-actions/postgresql/*
-%if %pam
-%config(noreplace) /etc/pam.d/postgresql
-%endif
 %{_bindir}/initdb
 %{_bindir}/pg_basebackup
 %{_bindir}/pg_controldata
@@ -1075,6 +1068,31 @@ fi
 %{_bindir}/postgres
 %{_bindir}/postgresql-setup
 %{_bindir}/postmaster
+%dir %{_datadir}/pgsql
+%{_datadir}/pgsql/*.sample
+%dir %{_datadir}/pgsql/contrib
+%{_datadir}/pgsql/conversion_create.sql
+%dir %{_datadir}/pgsql/extension
+%{_datadir}/pgsql/extension/plpgsql*
+%{_datadir}/pgsql/information_schema.sql
+%{_datadir}/pgsql/postgres.bki
+%{_datadir}/pgsql/postgres.description
+%{_datadir}/pgsql/postgres.shdescription
+%{_datadir}/pgsql/snowball_create.sql
+%{_datadir}/pgsql/sql_features.txt
+%{_datadir}/pgsql/system_views.sql
+%{_datadir}/pgsql/timezonesets/
+%{_datadir}/pgsql/tsearch_data/
+%{_libdir}/pgsql/*_and_*.so
+%{_libdir}/pgsql/dict_snowball.so
+%{_libdir}/pgsql/euc2004_sjis2004.so
+%{_libdir}/pgsql/libpqwalreceiver.so
+%{_libdir}/pgsql/pg_prewarm.so
+%{_libdir}/pgsql/plpgsql.so
+%dir %{_libexecdir}/initscripts/legacy-actions/postgresql
+%{_libexecdir}/initscripts/legacy-actions/postgresql/*
+%{_libexecdir}/postgresql-check-db-dir
+%{_libexecdir}/postgresql-ctl
 %{_mandir}/man1/initdb.*
 %{_mandir}/man1/pg_basebackup.*
 %{_mandir}/man1/pg_controldata.*
@@ -1084,43 +1102,25 @@ fi
 %{_mandir}/man1/postgres.*
 %{_mandir}/man1/postgresql-setup.*
 %{_mandir}/man1/postmaster.*
-%{_datadir}/pgsql/postgres.bki
-%{_datadir}/pgsql/postgres.description
-%{_datadir}/pgsql/postgres.shdescription
-%{_datadir}/pgsql/system_views.sql
-%{_datadir}/pgsql/*.sample
-%{_datadir}/pgsql/timezonesets/
-%{_datadir}/pgsql/tsearch_data/
-%{_libdir}/pgsql/dict_snowball.so
-%{_libdir}/pgsql/pg_prewarm.so
-%{_libdir}/pgsql/plpgsql.so
-%dir %{_datadir}/pgsql
-%dir %{_datadir}/pgsql/contrib
-%dir %{_datadir}/pgsql/extension
-%{_datadir}/pgsql/extension/plpgsql*
 %{_tmpfilesdir}/postgresql.conf
-%attr(755,postgres,postgres) %dir /var/run/postgresql
+%{_unitdir}/postgresql.service
+%{_unitdir}/postgresql@.service
 %attr(700,postgres,postgres) %dir /var/lib/pgsql
-%attr(700,postgres,postgres) %dir /var/lib/pgsql/data
-%attr(700,postgres,postgres) %dir /var/lib/pgsql/backups
 %attr(644,postgres,postgres) %config(noreplace) /var/lib/pgsql/.bash_profile
-%{_libdir}/pgsql/libpqwalreceiver.so
-%{_libdir}/pgsql/*_and_*.so
-%{_libdir}/pgsql/euc2004_sjis2004.so
-%{_datadir}/pgsql/conversion_create.sql
-%{_datadir}/pgsql/information_schema.sql
-%{_datadir}/pgsql/snowball_create.sql
-%{_datadir}/pgsql/sql_features.txt
-%{_libexecdir}/postgresql-ctl
-%{_libexecdir}/postgresql-check-db-dir
+%attr(700,postgres,postgres) %dir /var/lib/pgsql/backups
+%attr(700,postgres,postgres) %dir /var/lib/pgsql/data
+%attr(755,postgres,postgres) %dir /var/run/postgresql
+%if %pam
+%config(noreplace) /etc/pam.d/postgresql
+%endif
 
 %files devel -f devel.lst
-/usr/include/*
 %{_bindir}/ecpg
-%{_libdir}/libpq.so
+%{_includedir}/*
 %{_libdir}/libecpg.so
 %{_libdir}/libecpg_compat.so
 %{_libdir}/libpgtypes.so
+%{_libdir}/libpq.so
 %{_libdir}/pgsql/pgxs/
 %{_libdir}/pkgconfig/*.pc
 %{_mandir}/man1/ecpg.*
@@ -1143,18 +1143,18 @@ fi
 
 %if %pltcl
 %files pltcl -f pltcl.lst
-%{_datadir}/pgsql/extension/pltcl*
-%{_libdir}/pgsql/pltcl.so
 %{_bindir}/pltcl_delmod
 %{_bindir}/pltcl_listmod
 %{_bindir}/pltcl_loadmod
+%{_datadir}/pgsql/extension/pltcl*
 %{_datadir}/pgsql/unknown.pltcl
+%{_libdir}/pgsql/pltcl.so
 %endif
 
 %if %plpython
 %files plpython -f plpython.lst
-%{_datadir}/pgsql/extension/plpythonu*
 %{_datadir}/pgsql/extension/plpython2*
+%{_datadir}/pgsql/extension/plpythonu*
 %{_libdir}/pgsql/plpython2.so
 %endif
 
@@ -1166,12 +1166,13 @@ fi
 
 %if %test
 %files test
-%defattr(-,postgres,postgres)
-%attr(-,postgres,postgres) %{_libdir}/pgsql/test/*
-%attr(-,postgres,postgres) %dir %{_libdir}/pgsql/test
+%attr(-,postgres,postgres) %{_libdir}/pgsql/test
 %endif
 
 %changelog
+* Tue Feb 03 2015 Pavel Raiskup <praiskup@redhat.com> - 9.4.0-2
+- sort file lists alphabetically
+
 * Tue Dec 23 2014 Jozef Mlich <jmlich@redhat.com> - 9.4.0-1
 - update to 9.4.0 per release notes
   http://www.postgresql.org/docs/9.4/static/index.html
