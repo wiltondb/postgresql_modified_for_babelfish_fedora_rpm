@@ -683,13 +683,13 @@ install -D -m 644 macros.%{name} \
 # multilib header hack; note pg_config.h is installed in two places!
 # we only apply this to known Red Hat multilib arches, per bug #177564
 case `uname -i` in
-  i386 | x86_64 | ppc | ppc64 | s390 | s390x | sparc | sparc64 )
-    mv $RPM_BUILD_ROOT/usr/include/pg_config.h $RPM_BUILD_ROOT/usr/include/pg_config_`uname -i`.h
-    install -m 644 %{SOURCE5} $RPM_BUILD_ROOT/usr/include/
-    mv $RPM_BUILD_ROOT/usr/include/pgsql/server/pg_config.h $RPM_BUILD_ROOT/usr/include/pgsql/server/pg_config_`uname -i`.h
-    install -m 644 %{SOURCE5} $RPM_BUILD_ROOT/usr/include/pgsql/server/
-    mv $RPM_BUILD_ROOT/usr/include/ecpg_config.h $RPM_BUILD_ROOT/usr/include/ecpg_config_`uname -i`.h
-    install -m 644 %{SOURCE6} $RPM_BUILD_ROOT/usr/include/
+  i386 | x86_64 | ppc | ppc64 | ppc64p7 | s390 | s390x | sparc | sparc64 | aarch64 )
+    mv $RPM_BUILD_ROOT%{_includedir}/pg_config.h $RPM_BUILD_ROOT%{_includedir}/pg_config_`uname -i`.h
+    install -m 644 %{SOURCE5} $RPM_BUILD_ROOT%{_includedir}/
+    mv $RPM_BUILD_ROOT%{_includedir}/pgsql/server/pg_config.h $RPM_BUILD_ROOT%{_includedir}/pgsql/server/pg_config_`uname -i`.h
+    install -m 644 %{SOURCE5} $RPM_BUILD_ROOT%{_includedir}/pgsql/server/
+    mv $RPM_BUILD_ROOT%{_includedir}/ecpg_config.h $RPM_BUILD_ROOT%{_includedir}/ecpg_config_`uname -i`.h
+    install -m 644 %{SOURCE6} $RPM_BUILD_ROOT%{_includedir}/
     ;;
   *)
     ;;
