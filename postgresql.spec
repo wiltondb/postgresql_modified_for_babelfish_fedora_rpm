@@ -67,7 +67,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.4
 Version: 9.4.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -571,7 +571,8 @@ run_testsuite()
 
 	(
 		set +x
-		find "$1" -name 'regression.diffs' | \
+		echo "=== trying to find all regression.diffs files in build directory ==="
+		find -name 'regression.diffs' | \
 		while read line; do
 			echo "=== make failure: $line ==="
 			cat "$line"
@@ -1191,6 +1192,9 @@ fi
 %endif
 
 %changelog
+* Thu May 21 2015 Pavel Raiskup <praiskup@redhat.com> - 9.4.1-4
+- make the %%check phase more verbose for FAIL cases
+
 * Wed Mar 25 2015 Jozef Mlich <jmlich@redhat.com> - 9.4.1-3
 - update to postgresql-setup 3.3
 
