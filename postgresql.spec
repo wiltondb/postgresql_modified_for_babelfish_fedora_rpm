@@ -70,8 +70,8 @@
 Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.4
-Version: 9.4.1
-Release: 4%{?dist}
+Version: 9.4.2
+Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -86,7 +86,7 @@ Url: http://www.postgresql.org/
 # in-place upgrade of an old database.  In most cases it will not be critical
 # that this be kept up with the latest minor release of the previous series;
 # but update when bugs affecting pg_dump output are fixed.
-%global prevversion 9.3.6
+%global prevversion 9.3.7
 %global prevmajorversion 9.3
 
 %global setup_version 3.3
@@ -1196,6 +1196,10 @@ fi
 %endif
 
 %changelog
+* Thu May 21 2015 Jozef Mlich <jmlich@redhat.com> - 9.4.2-1
+- update to 9.4.2 per release notes
+  http://www.postgresql.org/docs/9.4/static/release-9-4-2.html
+
 * Thu May 21 2015 Pavel Raiskup <praiskup@redhat.com> - 9.4.1-4
 - make the %%check phase more verbose for FAIL cases
 - don't FTBFS on f23+ where hardening is on by default
