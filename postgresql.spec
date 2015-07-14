@@ -71,7 +71,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.4
 Version: 9.4.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -689,13 +689,15 @@ install -D -m 644 macros.%{name} \
 
 # multilib header hack; note pg_config.h is installed in two places!
 # we only apply this to known Red Hat multilib arches, per bug #177564
-case `uname -i` in
-  i386 | x86_64 | ppc | ppc64 | ppc64p7 | s390 | s390x | sparc | sparc64 | aarch64 )
-    mv $RPM_BUILD_ROOT%{_includedir}/pg_config.h $RPM_BUILD_ROOT%{_includedir}/pg_config_`uname -i`.h
+build_arch=`uname -i`
+test "$build_arch" = ppc64p7 && build_arch=ppc64
+case "$build_arch" in
+  i386 | x86_64 | ppc | ppc64 | s390 | s390x | sparc | sparc64 )
+    mv $RPM_BUILD_ROOT%{_includedir}/pg_config.h $RPM_BUILD_ROOT%{_includedir}/pg_config_"$build_arch".h
     install -m 644 %{SOURCE5} $RPM_BUILD_ROOT%{_includedir}/
-    mv $RPM_BUILD_ROOT%{_includedir}/pgsql/server/pg_config.h $RPM_BUILD_ROOT%{_includedir}/pgsql/server/pg_config_`uname -i`.h
+    mv $RPM_BUILD_ROOT%{_includedir}/pgsql/server/pg_config.h $RPM_BUILD_ROOT%{_includedir}/pgsql/server/pg_config_"$build_arch".h
     install -m 644 %{SOURCE5} $RPM_BUILD_ROOT%{_includedir}/pgsql/server/
-    mv $RPM_BUILD_ROOT%{_includedir}/ecpg_config.h $RPM_BUILD_ROOT%{_includedir}/ecpg_config_`uname -i`.h
+    mv $RPM_BUILD_ROOT%{_includedir}/ecpg_config.h $RPM_BUILD_ROOT%{_includedir}/ecpg_config_"$build_arch".h
     install -m 644 %{SOURCE6} $RPM_BUILD_ROOT%{_includedir}/
     ;;
   *)
@@ -1198,6 +1200,9 @@ fi
 %endif
 
 %changelog
+* Tue Jul 14 2015 Pavel Raiskup <praiskup@redhat.com> - 9.4.4-3
+- revert/fix part of e6acde1a9 commit related to multilib hack (rhbz#1242873)
+
 * Thu Jun 18 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 9.4.4-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
