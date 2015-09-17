@@ -53,10 +53,6 @@
 %{!?selinux:%global selinux 1}
 %{!?runselftest:%global runselftest 1}
 
-# do not fail on 32-bit architectures with globally enabled hardening, see the
-# FESCO ticket #1384 and rhbz#947022 for more info.
-%undefine _hardened_build
-
 # By default, patch(1) creates backup files when chunks apply with offsets.
 # Turn that off to ensure such files don't get included in RPMs.
 %global _default_patch_flags --no-backup-if-mismatch
@@ -71,7 +67,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.4
 Version: 9.4.4
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1198,6 +1194,9 @@ fi
 %endif
 
 %changelog
+* Thu Sep 17 2015 Pavel Raiskup <praiskup@redhat.com> - 9.4.4-5
+- enable hardening (safe for kernel 4.1+) (see rhbz#952946 comment #24)
+
 * Tue Aug 04 2015 Pavel Raiskup <praiskup@redhat.com> - 9.4.4-4
 - install README.rpm-dist properly (rhbz#1249708)
 
