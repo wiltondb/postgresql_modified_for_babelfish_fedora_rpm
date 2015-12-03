@@ -67,7 +67,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.4
 Version: 9.4.5
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -896,6 +896,8 @@ if [ $1 -ge 1 ]; then
 fi
 %endif
 
+%clean
+
 # FILES section.
 
 %files -f main.lst
@@ -1186,6 +1188,9 @@ fi
 %endif
 
 %changelog
+* Thu Dec 3 2015 Pavel Kajaba <pkajaba@redhat.com> - 9.4.5-4
+- fixed short-circuit build
+
 * Thu Nov 12 2015 Pavel Raiskup <praiskup@redhat.com> - 9.4.5-3
 - fix testsuite failure with new Python 3.5 (rhbz#1280404)
 
