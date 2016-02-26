@@ -67,7 +67,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.5
 Version: 9.5.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -267,6 +267,15 @@ needed to compile C or C++ applications which will directly interact
 with a PostgreSQL database management server.  It also contains the ecpg
 Embedded C Postgres preprocessor. You need to install this package if you want
 to develop applications which will interact with a PostgreSQL server.
+
+
+%package static
+Summary: Statically linked PostgreSQL libraries
+Requires: %{name}-devel%{?_isa} = %{version}-%{release}
+
+%description static
+Statically linked PostgreSQL libraries that do not have dynamically linked
+counterparts.
 
 
 %if %upgrade
@@ -777,7 +786,7 @@ mv $RPM_BUILD_ROOT%{_docdir}/pgsql/html doc
 rm -rf $RPM_BUILD_ROOT%{_docdir}/pgsql
 
 # remove files not to be packaged
-rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
+rm $RPM_BUILD_ROOT%{_libdir}/{libecpg,libpq,libecpg_compat,libpgtypes}.a
 
 %if !%plperl
 rm -f $RPM_BUILD_ROOT%{_bindir}/pgsql/hstore_plperl.so
@@ -1157,6 +1166,10 @@ fi
 %{_mandir}/man3/SPI_*
 %{macrosdir}/*
 
+%files static
+%{_libdir}/libpgcommon.a
+%{_libdir}/libpgport.a
+
 %if %upgrade
 %files upgrade
 %{_libdir}/pgsql/postgresql-%{prevmajorversion}
@@ -1197,6 +1210,9 @@ fi
 %endif
 
 %changelog
+* Fri Feb 26 2016 Pavel Raiskup <praiskup@redhat.com> - 9.5.1-2
+- package static libraries without dynamic counterparts (rhbz#784281)
+
 * Tue Feb 09 2016 Pavel Raiskup <praiskup@redhat.com> - 9.5.1-1
 - update to 9.5.1 per release notes
   http://www.postgresql.org/docs/9.5/static/release-9-5-1.html
