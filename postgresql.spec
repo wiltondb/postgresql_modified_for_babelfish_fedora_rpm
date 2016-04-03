@@ -1115,6 +1115,7 @@ fi
 %{_datadir}/pgsql/system_views.sql
 %{_datadir}/pgsql/timezonesets/
 %{_datadir}/pgsql/tsearch_data/
+%dir %{_datadir}/postgresql-setup
 %{_datadir}/postgresql-setup/library.sh
 %{_libdir}/pgsql/*_and_*.so
 %{_libdir}/pgsql/dict_snowball.so
