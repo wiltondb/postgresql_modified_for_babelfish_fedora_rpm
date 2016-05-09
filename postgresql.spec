@@ -67,7 +67,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.5
 Version: 9.5.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -777,7 +777,9 @@ install -m 644 %{SOURCE11} $RPM_BUILD_ROOT/var/lib/pgsql/.bash_profile
 	rm -f GNUmakefile Makefile *.o
 	chmod 0755 pg_regress regress.so
 	popd
-	cp %{SOURCE4} $RPM_BUILD_ROOT%{_libdir}/pgsql/test/regress/Makefile
+	sed 's|@bindir@|%{_bindir}|g' \
+		< %{SOURCE4} \
+		> $RPM_BUILD_ROOT%{_libdir}/pgsql/test/regress/Makefile
 	chmod 0644 $RPM_BUILD_ROOT%{_libdir}/pgsql/test/regress/Makefile
 %endif
 
@@ -1211,6 +1213,9 @@ fi
 %endif
 
 %changelog
+* Mon May 09 2016 Pavel Raiskup <praiskup@redhat.com> - 9.5.2-2
+- fix the test subpackage, pg_regress now uses --bindir
+
 * Sun Apr 03 2016 Pavel Raiskup <praiskup@redhat.com> - 9.5.2-1
 - update to 9.5.2 per release notes
   http://www.postgresql.org/docs/9.5/static/release-9-5-2.html
