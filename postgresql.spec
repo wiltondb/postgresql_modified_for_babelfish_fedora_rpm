@@ -67,7 +67,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.5
 Version: 9.5.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1213,6 +1213,9 @@ fi
 %endif
 
 %changelog
+* Sun May 15 2016 Jitka Plesnikova <jplesnik@redhat.com> - 9.5.3-2
+- Perl 5.24 rebuild
+
 * Thu May 12 2016 Pavel Raiskup <praiskup@redhat.com> - 9.5.3-1
 - update to 9.5.3 per release notes:
   http://www.postgresql.org/docs/9.5/static/release-9-5-3.html
