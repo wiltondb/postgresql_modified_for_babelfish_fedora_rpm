@@ -67,7 +67,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.5
 Version: 9.5.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -94,7 +94,6 @@ Source1: postgresql-%{version}-US.pdf
 Source2: generate-pdf.sh
 Source3: ftp://ftp.postgresql.org/pub/source/v%{prevversion}/postgresql-%{prevversion}.tar.bz2
 Source4: Makefile.regress
-Source5: multilib-fix
 Source9: postgresql.tmpfiles.d
 Source10: postgresql.pam
 Source11: postgresql-bashprofile
@@ -121,6 +120,7 @@ BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk help2man
 BuildRequires: perl(ExtUtils::Embed), perl-devel
 BuildRequires: readline-devel zlib-devel
 BuildRequires: systemd-units util-linux
+BuildRequires: multilib-rpm-config
 
 # postgresql-setup build requires
 BuildRequires: m4 elinks docbook-utils help2man
@@ -687,12 +687,14 @@ install -D -m 644 macros.%{name} \
     $RPM_BUILD_ROOT%{macrosdir}/macros.%{name}
 
 # multilib header hack; some headers are installed in two places!
-%global ml_fix_c_header %{SOURCE5} --buildroot "$RPM_BUILD_ROOT"
-for header in pg_config pg_config_ext ecpg_config; do
-%ml_fix_c_header --destdir "%{_includedir}" --basename "$header"
-done
-for header in pg_config pg_config_ext; do
-%ml_fix_c_header --destdir "%{_includedir}/pgsql/server" --basename "$header"
+for header in \
+	%{_includedir}/pg_config.h \
+	%{_includedir}/pg_config_ext.h \
+	%{_includedir}/ecpg_config.h \
+	%{_includedir}/pgsql/server/pg_config.h \
+	%{_includedir}/pgsql/server/pg_config_ext.h
+do
+%multilib_fix_c_header --file "$header"
 done
 
 install -d -m 755 $RPM_BUILD_ROOT%{_libdir}/pgsql/tutorial
@@ -1213,6 +1215,9 @@ fi
 %endif
 
 %changelog
+* Mon Jun 20 2016 Pavel Raiskup <praiskup@redhat.com> - 9.5.3-3
+- use multilib-rpm-config package for multilib hacks
+
 * Sun May 15 2016 Jitka Plesnikova <jplesnik@redhat.com> - 9.5.3-2
 - Perl 5.24 rebuild
 
