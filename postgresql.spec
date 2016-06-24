@@ -118,6 +118,7 @@ Patch6: postgresql-man.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk help2man
 BuildRequires: perl(ExtUtils::Embed), perl-devel
+BuildRequires: perl-generators
 BuildRequires: readline-devel zlib-devel
 BuildRequires: systemd-units util-linux
 BuildRequires: multilib-rpm-config
