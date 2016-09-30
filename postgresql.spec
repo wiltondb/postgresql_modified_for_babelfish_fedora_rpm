@@ -65,8 +65,8 @@
 
 Summary: PostgreSQL client programs
 Name: postgresql
-%global majorversion 9.5
-Version: 9.5.4
+%global majorversion 9.6
+Version: 9.6.0
 Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
@@ -82,8 +82,8 @@ Url: http://www.postgresql.org/
 # in-place upgrade of an old database.  In most cases it will not be critical
 # that this be kept up with the latest minor release of the previous series;
 # but update when bugs affecting pg_dump output are fixed.
-%global prevversion 9.4.9
-%global prevmajorversion 9.4
+%global prevversion 9.5.4
+%global prevmajorversion 9.5
 
 %global setup_version 4.0
 
@@ -112,7 +112,6 @@ Source17: ftp://ftp.postgresql.org/pub/source/v%{prevversion}/postgresql-%{prevv
 Patch1: rpm-pgsql.patch
 Patch2: postgresql-logging.patch
 Patch3: postgresql-perl-rpath.patch
-Patch4: postgresql-config-comment.patch
 Patch5: postgresql-var-run-socket.patch
 Patch6: postgresql-man.patch
 
@@ -362,7 +361,6 @@ benchmarks.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 %patch5 -p1
 %patch6 -p1
 
@@ -492,6 +490,10 @@ export PYTHON=/usr/bin/python3
 cd src/backend
 make submake-errcodes
 cd ../..
+# This line somehow fixes build under 9.6
+# originaly it contained this error:
+# ../../../src/include/storage/lwlock.h:129:33: fatal error: storage/lwlocknames.h: No such file or directory
+make %{?_smp_mflags}
 cd src/pl/plpython
 make %{?_smp_mflags} all
 cd ..
@@ -970,6 +972,7 @@ fi
 %{_bindir}/vacuumlo
 %{_datadir}/pgsql/extension/adminpack*
 %{_datadir}/pgsql/extension/autoinc*
+%{_datadir}/pgsql/extension/bloom*
 %{_datadir}/pgsql/extension/btree_gin*
 %{_datadir}/pgsql/extension/btree_gist*
 %{_datadir}/pgsql/extension/chkpass*
@@ -995,6 +998,7 @@ fi
 %{_datadir}/pgsql/extension/pg_prewarm*
 %{_datadir}/pgsql/extension/pg_stat_statements*
 %{_datadir}/pgsql/extension/pg_trgm*
+%{_datadir}/pgsql/extension/pg_visibility*
 %{_datadir}/pgsql/extension/pgcrypto*
 %{_datadir}/pgsql/extension/pgrowlocks*
 %{_datadir}/pgsql/extension/pgstattuple*
@@ -1013,6 +1017,7 @@ fi
 %{_libdir}/pgsql/auth_delay.so
 %{_libdir}/pgsql/auto_explain.so
 %{_libdir}/pgsql/autoinc.so
+%{_libdir}/pgsql/bloom.so
 %{_libdir}/pgsql/btree_gin.so
 %{_libdir}/pgsql/btree_gist.so
 %{_libdir}/pgsql/chkpass.so
@@ -1045,6 +1050,7 @@ fi
 %{_libdir}/pgsql/pg_freespacemap.so
 %{_libdir}/pgsql/pg_stat_statements.so
 %{_libdir}/pgsql/pg_trgm.so
+%{_libdir}/pgsql/pg_visibility.so
 %{_libdir}/pgsql/pgcrypto.so
 %{_libdir}/pgsql/pgrowlocks.so
 %{_libdir}/pgsql/pgstattuple.so
@@ -1174,6 +1180,7 @@ fi
 
 %files static
 %{_libdir}/libpgcommon.a
+%{_libdir}/libpgfeutils.a
 %{_libdir}/libpgport.a
 
 %if %upgrade
@@ -1216,6 +1223,10 @@ fi
 %endif
 
 %changelog
+* Fri Sep 30 2016 Pavel Raiskup <praiskup@redhat.com> - 9.6.0-1
+- update to 9.6.0 per release notes:
+  https://www.postgresql.org/docs/9.6/static/release-9-6.html
+
 * Fri Aug 12 2016 Petr Kubat <pkubat@redhat.com> - 9.5.4-1
 - update to 9.5.4 per release notes:
   http://www.postgresql.org/docs/9.5/static/release-9-5-4.html
