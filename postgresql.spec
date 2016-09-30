@@ -486,20 +486,13 @@ export PYTHON=/usr/bin/python3
 	--with-system-tzdata=%{_datadir}/zoneinfo \
 	--datadir=%{_datadir}/pgsql
 
-# Fortunately we don't need to build much except plpython itself
-cd src/backend
-make submake-errcodes
-cd ../..
-# This line somehow fixes build under 9.6
-# originaly it contained this error:
-# ../../../src/include/storage/lwlock.h:129:33: fatal error: storage/lwlocknames.h: No such file or directory
-make %{?_smp_mflags}
-cd src/pl/plpython
-make %{?_smp_mflags} all
-cd ..
+# Fortunately we don't need to build much except plpython itself.
+# TODO: remove the headers hack once this is resolved:
+# https://www.postgresql.org/message-id/1925924.izSMJEZO3x@unused-4-107.brq.redhat.com
+make %{?_smp_mflags} submake-generated-headers
+make %{?_smp_mflags} -C src/pl/plpython all
 # save built form in a directory that "make distclean" won't touch
-cp -a plpython plpython3
-cd ../..
+cp -a src/pl/plpython src/pl/plpython3
 
 # must also save this version of Makefile.global for later
 cp src/Makefile.global src/Makefile.global.python3
