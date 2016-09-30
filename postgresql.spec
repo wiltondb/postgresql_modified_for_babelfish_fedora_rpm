@@ -566,29 +566,27 @@ sed "s|C=\`pwd\`;|C=%{_libdir}/pgsql/tutorial;|" < src/tutorial/Makefile > src/t
 make %{?_smp_mflags} -C src/tutorial NO_PGXS=1 all
 rm -f src/tutorial/GNUmakefile
 
-test_failure=0
-
 # run_testsuite WHERE
 # -------------------
 # Run 'make check' in WHERE path.  When that command fails, return the logs
-# given by PostgreSQL build system and set 'test_failure=1'.
-
+# given by PostgreSQL build system and set 'test_failure=1'.  This function
+# never exits directly nor stops rpmbuild where `set -e` is enabled.
+# all tests if possible).
 run_testsuite()
 {
-	make -C "$1" MAX_CONNECTIONS=5 check && return 0
-
-	test_failure=1
-
+	make -k -C "$1" MAX_CONNECTIONS=5 check && return 0 || test_failure=1
 	(
 		set +x
 		echo "=== trying to find all regression.diffs files in build directory ==="
-		find -name 'regression.diffs' | \
+		find "$1" -name 'regression.diffs' | \
 		while read line; do
 			echo "=== make failure: $line ==="
 			cat "$line"
 		done
 	)
 }
+
+test_failure=0
 
 %if %runselftest
 	run_testsuite "src/test/regress"
