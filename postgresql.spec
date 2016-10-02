@@ -564,7 +564,6 @@ rm -f src/tutorial/GNUmakefile
 # Run 'make check' in WHERE path.  When that command fails, return the logs
 # given by PostgreSQL build system and set 'test_failure=1'.  This function
 # never exits directly nor stops rpmbuild where `set -e` is enabled.
-# all tests if possible).
 run_testsuite()
 {
 	make -k -C "$1" MAX_CONNECTIONS=5 check && return 0 || test_failure=1
