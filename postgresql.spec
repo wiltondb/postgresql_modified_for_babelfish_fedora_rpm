@@ -367,19 +367,10 @@ benchmarks.
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
 
-# add ppc64p7 support (https://fedoraproject.org/wiki/Features/Power7Subarch)
-# hopefully need for this will go away next time upstream updates config.sub
-sed -i -e "s/ppc64-\*/ppc64-\* \| ppc64p7-\*/" config/config.sub
-
 cp -p %{SOURCE1} .
 
 %if %upgrade
 tar xfj %{SOURCE3}
-# make sure older version is up-to-date on config.guess/config.sub;
-# not always necessary, but PG 9.2 knows about aarch64 while 9.1 doesn't
-# (and also see the ppc64p7 hack above)
-cp -p config/config.guess postgresql-%{prevversion}/config/config.guess
-cp -p config/config.sub postgresql-%{prevversion}/config/config.sub
 
 # apply once SOURCE3 is extracted
 %endif
@@ -1212,6 +1203,7 @@ fi
   https://www.postgresql.org/docs/9.6/static/release-9-6-1.html
 - add gen_sources.sh script
 - remove plpython build hack, fixed upstream
+- remove aarch64 and ppc64p7 hacks, fixed by the %%configure call
 
 * Tue Oct 04 2016 Pavel Raiskup <praiskup@redhat.com> - 9.6.0-1
 - rebase the postgresql-setup tarball
