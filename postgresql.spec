@@ -487,9 +487,6 @@ export PYTHON=/usr/bin/python3
 	--datadir=%{_datadir}/pgsql
 
 # Fortunately we don't need to build much except plpython itself.
-# TODO: remove the headers hack once this is resolved:
-# https://www.postgresql.org/message-id/1925924.izSMJEZO3x@unused-4-107.brq.redhat.com
-make %{?_smp_mflags} submake-generated-headers
 make %{?_smp_mflags} -C src/pl/plpython all
 # save built form in a directory that "make distclean" won't touch
 cp -a src/pl/plpython src/pl/plpython3
@@ -1214,6 +1211,7 @@ fi
 - update to 9.6.1 per release notes:
   https://www.postgresql.org/docs/9.6/static/release-9-6-1.html
 - add gen_sources.sh script
+- remove plpython build hack, fixed upstream
 
 * Tue Oct 04 2016 Pavel Raiskup <praiskup@redhat.com> - 9.6.0-1
 - rebase the postgresql-setup tarball
