@@ -767,7 +767,7 @@ mv $RPM_BUILD_ROOT%{_docdir}/pgsql/html doc
 rm -rf $RPM_BUILD_ROOT%{_docdir}/pgsql
 
 # remove files not to be packaged
-rm $RPM_BUILD_ROOT%{_libdir}/{libecpg,libpq,libecpg_compat,libpgtypes}.a
+rm $RPM_BUILD_ROOT%{_libdir}/lib{ecpg,pq,ecpg_compat,pgfeutils,pgtypes}.a
 
 %if !%plperl
 rm -f $RPM_BUILD_ROOT%{_bindir}/pgsql/hstore_plperl.so
@@ -1155,7 +1155,6 @@ fi
 
 %files static
 %{_libdir}/libpgcommon.a
-%{_libdir}/libpgfeutils.a
 %{_libdir}/libpgport.a
 
 %if %upgrade
@@ -1198,9 +1197,10 @@ fi
 %endif
 
 %changelog
-* Tue Feb 07 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.2-1
+* Wed Feb 22 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.2-1
 - update to 9.6.2 per release notes:
   https://www.postgresql.org/docs/9.6/static/release-9-6-2.html
+- remove mistakenly isntalled libpgfeutils.a
 
 * Thu Jan 12 2017 Igor Gnatenko <ignatenko@redhat.com> - 9.6.1-3
 - Rebuild for readline 7.x
