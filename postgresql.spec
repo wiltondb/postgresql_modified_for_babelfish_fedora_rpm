@@ -114,6 +114,7 @@ Patch2: postgresql-logging.patch
 Patch3: postgresql-perl-rpath.patch
 Patch5: postgresql-var-run-socket.patch
 Patch6: postgresql-man.patch
+Patch7: postgresql-timezonetz-2017-tests.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk help2man
 BuildRequires: perl(ExtUtils::Embed), perl-devel
@@ -363,6 +364,7 @@ benchmarks.
 %patch3 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
