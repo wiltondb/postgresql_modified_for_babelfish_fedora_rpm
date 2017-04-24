@@ -64,7 +64,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.6
 Version: 9.6.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -79,7 +79,7 @@ Url: http://www.postgresql.org/
 %global prevversion 9.5.6
 %global prevmajorversion 9.5
 
-%global setup_version 5.0
+%global setup_version 5.1
 
 %global service_name postgresql.service
 Source0: ftp://ftp.postgresql.org/pub/source/v%{version}/postgresql-%{version}.tar.bz2
@@ -391,9 +391,6 @@ cd postgresql-setup-%{setup_version}
 
 %configure \
     pgdocdir=%{_pkgdocdir} \
-    systemdunitsdir=%{_prefix}/lib/systemd/system \
-    systemduserunitsdir=%{_sysconfdir}/systemd/system \
-    systemdlegacyscriptsdir=%{_libexecdir}/initscripts/legacy-actions \
     PGVERSION=%{version} \
     PGMAJORVERSION=%{majorversion} \
     NAME_DEFAULT_PREV_SERVICE=postgresql
@@ -1169,6 +1166,9 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Mon Apr 24 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.2-4
+- rebase to postgresql-setup 5.1
+
 * Mon Apr 10 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.2-3
 - spring cleanup
 
