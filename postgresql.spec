@@ -64,7 +64,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.6
 Version: 9.6.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -109,6 +109,7 @@ Patch2: postgresql-logging.patch
 Patch3: postgresql-perl-rpath.patch
 Patch5: postgresql-var-run-socket.patch
 Patch6: postgresql-man.patch
+Patch7: hstore-plperl-data-dumper.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk
 BuildRequires: perl(ExtUtils::Embed), perl-devel
@@ -356,6 +357,7 @@ benchmarks.
 %patch3 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
@@ -1164,6 +1166,9 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Mon May 22 2017 Petr Kubat <pkubat@redhat.com> - 9.6.3-2
+- fix indentation issues in hstore_plperlu test-case (rhbz#1453111)
+
 * Thu May 11 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.3-1
 - update to 9.6.3 per release notes:
   https://www.postgresql.org/docs/9.6/static/release-9-6-3.html
