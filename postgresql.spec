@@ -64,7 +64,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.6
 Version: 9.6.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1166,6 +1166,9 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Sun Jun 04 2017 Jitka Plesnikova <jplesnik@redhat.com> - 9.6.3-3
+- Perl 5.26 rebuild
+
 * Mon May 22 2017 Petr Kubat <pkubat@redhat.com> - 9.6.3-2
 - fix indentation issues in hstore_plperlu test-case (rhbz#1453111)
 
