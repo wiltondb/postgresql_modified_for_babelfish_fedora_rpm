@@ -64,7 +64,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.6
 Version: 9.6.3
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -407,9 +407,6 @@ CFLAGS=`echo $CFLAGS | xargs -n 1 | sed 's|-O2|-O3|g' | xargs -n 100`
 %endif
 # Strip out -ffast-math from CFLAGS....
 CFLAGS=`echo $CFLAGS|xargs -n 1|grep -v ffast-math|xargs -n 100`
-# Add LINUX_OOM_SCORE_ADJ=0 to ensure child processes reset postmaster's oom_score_adj
-# (this define will be useless in Postgres 9.5 and later)
-CFLAGS="$CFLAGS -DLINUX_OOM_SCORE_ADJ=0"
 export CFLAGS
 
 # plpython requires separate configure/build runs to build against python 2
@@ -1166,6 +1163,9 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Mon Jun 12 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.3-4
+- drop -DLINUX_OOM_SCORE_ADJ=0 define from CFLAGS (rhbz#1110969, rhbz#1436554)
+
 * Sun Jun 04 2017 Jitka Plesnikova <jplesnik@redhat.com> - 9.6.3-3
 - Perl 5.26 rebuild
 
