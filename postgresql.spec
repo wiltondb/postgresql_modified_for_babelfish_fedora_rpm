@@ -30,7 +30,6 @@
 # always get built.
 
 %{!?beta:%global beta 0}
-%{?beta:%global __os_install_post /usr/lib/rpm/brp-compress}
 
 %{!?test:%global test 1}
 %{!?upgrade:%global upgrade 1}
@@ -64,7 +63,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.6
 Version: 9.6.3
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1163,6 +1162,9 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Wed Jun 21 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.3-5
+- drop the __os_install_post redefinition hack
+
 * Mon Jun 12 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.3-4
 - drop -DLINUX_OOM_SCORE_ADJ=0 define from CFLAGS (rhbz#1110969, rhbz#1436554)
 
