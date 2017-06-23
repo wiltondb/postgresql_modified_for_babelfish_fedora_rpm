@@ -63,7 +63,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.6
 Version: 9.6.3
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -172,6 +172,10 @@ BuildRequires: libselinux-devel
 
 # main package requires -libs subpackage
 Requires: %{name}-libs%{?_isa} = %{version}-%{release}
+
+# https://bugzilla.redhat.com/1464368
+%filter_provides_in %{_libdir}/pgsql
+%filter_setup
 
 %description
 PostgreSQL is an advanced Object-Relational database management system (DBMS).
@@ -1162,6 +1166,9 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Fri Jun 23 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.3-6
+- don't provide libpqwalreceiver.so() soname
+
 * Wed Jun 21 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.3-5
 - drop the __os_install_post redefinition hack
 
