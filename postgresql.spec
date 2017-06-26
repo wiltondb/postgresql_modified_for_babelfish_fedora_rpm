@@ -174,8 +174,7 @@ BuildRequires: libselinux-devel
 Requires: %{name}-libs%{?_isa} = %{version}-%{release}
 
 # https://bugzilla.redhat.com/1464368
-%filter_provides_in %{_libdir}/pgsql
-%filter_setup
+%global __provides_exclude_from %{_libdir}/pgsql
 
 %description
 PostgreSQL is an advanced Object-Relational database management system (DBMS).
@@ -1166,7 +1165,7 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
-* Fri Jun 23 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.3-6
+* Mon Jun 26 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.3-6
 - don't provide libpqwalreceiver.so() soname
 
 * Wed Jun 21 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.3-5
