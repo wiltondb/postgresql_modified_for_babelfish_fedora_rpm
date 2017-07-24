@@ -63,7 +63,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.6
 Version: 9.6.3
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -105,7 +105,6 @@ Source17: ftp://ftp.postgresql.org/pub/source/v%{prevversion}/postgresql-%{prevv
 # Comments for these patches are in the patch files.
 Patch1: rpm-pgsql.patch
 Patch2: postgresql-logging.patch
-Patch3: postgresql-perl-rpath.patch
 Patch5: postgresql-var-run-socket.patch
 Patch6: postgresql-man.patch
 Patch7: hstore-plperl-data-dumper.patch
@@ -356,7 +355,6 @@ benchmarks.
 %setup -q -a 12
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
@@ -1165,6 +1163,9 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Mon Jul 24 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.3-7
+- drop perl rpath patch; libperl.so* is now in %%_libdir (rhbz#1474417)
+
 * Mon Jun 26 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.3-6
 - don't provide libpqwalreceiver.so() soname
 
