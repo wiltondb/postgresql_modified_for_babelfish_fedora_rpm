@@ -63,7 +63,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.6
 Version: 9.6.3
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1163,6 +1163,9 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Thu Jul 27 2017 Fedora Release Engineering <releng@fedoraproject.org> - 9.6.3-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
 * Mon Jul 24 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.3-7
 - drop perl rpath patch; libperl.so* is now in %%_libdir (rhbz#1474417)
 
