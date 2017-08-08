@@ -62,8 +62,8 @@
 Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.6
-Version: 9.6.3
-Release: 9%{?dist}
+Version: 9.6.4
+Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -75,7 +75,7 @@ Url: http://www.postgresql.org/
 # in-place upgrade of an old database.  In most cases it will not be critical
 # that this be kept up with the latest minor release of the previous series;
 # but update when bugs affecting pg_dump output are fixed.
-%global prevversion 9.5.7
+%global prevversion 9.5.8
 %global prevmajorversion 9.5
 
 %global setup_version 5.1
@@ -107,7 +107,6 @@ Patch1: rpm-pgsql.patch
 Patch2: postgresql-logging.patch
 Patch5: postgresql-var-run-socket.patch
 Patch6: postgresql-man.patch
-Patch7: hstore-plperl-data-dumper.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk
 BuildRequires: perl(ExtUtils::Embed), perl-devel
@@ -357,7 +356,6 @@ benchmarks.
 %patch2 -p1
 %patch5 -p1
 %patch6 -p1
-%patch7 -p1
 
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
@@ -1163,6 +1161,10 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Tue Aug 08 2017 Petr Kubat <pkubat@redhat.com> - 9.6.4-1
+- update to 9.6.4 per release notes:
+  https://www.postgresql.org/docs/9.6/static/release-9-6-4.html
+
 * Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 9.6.3-9
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
