@@ -63,7 +63,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 9.6
 Version: 9.6.5
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -875,7 +875,6 @@ make -C postgresql-setup-%{setup_version} check
 %{_bindir}/psql
 %{_bindir}/reindexdb
 %{_bindir}/vacuumdb
-%dir %{_libdir}/pgsql
 %{_mandir}/man1/clusterdb.*
 %{_mandir}/man1/createdb.*
 %{_mandir}/man1/createlang.*
@@ -1032,6 +1031,7 @@ make -C postgresql-setup-%{setup_version} check
 
 %files libs -f libs.lst
 %doc COPYRIGHT
+%dir %{_libdir}/pgsql
 %{_libdir}/libecpg.so.*
 %{_libdir}/libecpg_compat.so.*
 %{_libdir}/libpgtypes.so.*
@@ -1161,6 +1161,9 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Tue Sep 05 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.5-2
+- move %%_libdir/pgsql into *-libs subpackage
+
 * Tue Aug 29 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.5-1
 - update to 9.6.5 per release notes:
   https://www.postgresql.org/docs/9.6/static/release-9-6-5.html
