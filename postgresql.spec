@@ -61,9 +61,9 @@
 
 Summary: PostgreSQL client programs
 Name: postgresql
-%global majorversion 9.6
-Version: 9.6.5
-Release: 2%{?dist}
+%global majorversion 10
+Version: 10.0
+Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -75,8 +75,8 @@ Url: http://www.postgresql.org/
 # in-place upgrade of an old database.  In most cases it will not be critical
 # that this be kept up with the latest minor release of the previous series;
 # but update when bugs affecting pg_dump output are fixed.
-%global prevversion 9.5.9
-%global prevmajorversion 9.5
+%global prevversion 9.6.5
+%global prevmajorversion 9.6
 
 %global setup_version 5.1
 
@@ -770,6 +770,7 @@ rm -f $RPM_BUILD_ROOT%{_bindir}/pgsql/hstore_plpython2.so
 cp /dev/null main.lst
 cp /dev/null libs.lst
 cp /dev/null server.lst
+cp /dev/null contrib.lst
 cp /dev/null devel.lst
 cp /dev/null plperl.lst
 cp /dev/null pltcl.lst
@@ -777,53 +778,35 @@ cp /dev/null plpython.lst
 cp /dev/null plpython3.lst
 
 %if %nls
-%find_lang ecpg-%{majorversion}
-cat ecpg-%{majorversion}.lang >>devel.lst
-%find_lang ecpglib6-%{majorversion}
-cat ecpglib6-%{majorversion}.lang >>libs.lst
-%find_lang initdb-%{majorversion}
-cat initdb-%{majorversion}.lang >>server.lst
-%find_lang libpq5-%{majorversion}
-cat libpq5-%{majorversion}.lang >>libs.lst
-%find_lang pg_basebackup-%{majorversion}
-cat pg_basebackup-%{majorversion}.lang >>server.lst
-%find_lang pg_controldata-%{majorversion}
-cat pg_controldata-%{majorversion}.lang >>server.lst
-%find_lang pg_ctl-%{majorversion}
-cat pg_ctl-%{majorversion}.lang >>server.lst
-%find_lang pg_config-%{majorversion}
-cat pg_config-%{majorversion}.lang >>main.lst
-%find_lang pg_dump-%{majorversion}
-cat pg_dump-%{majorversion}.lang >>main.lst
-%find_lang pg_resetxlog-%{majorversion}
-cat pg_resetxlog-%{majorversion}.lang >>server.lst
-%find_lang pg_rewind-%{majorversion}
-cat pg_rewind-%{majorversion}.lang >>server.lst
-%find_lang pgscripts-%{majorversion}
-cat pgscripts-%{majorversion}.lang >>main.lst
+find_lang_bins ()
+{
+	lstfile=$1 ; shift
+	for binary; do
+		%find_lang "$binary"-%{majorversion}
+		cat "$binary"-%{majorversion}.lang >>$lstfile
+	done
+}
+find_lang_bins devel.lst ecpg
+find_lang_bins libs.lst ecpglib6 libpq5
+find_lang_bins server.lst \
+	initdb pg_basebackup pg_controldata pg_ctl pg_resetwal pg_rewind plpgsql postgres
+find_lang_bins contrib.lst \
+	pg_archivecleanup pg_test_fsync pg_test_timing pg_waldump
+find_lang_bins  main.lst \
+	pg_config pg_dump pg_upgrade pgscripts psql
 %if %plperl
-%find_lang plperl-%{majorversion}
-cat plperl-%{majorversion}.lang >>plperl.lst
+find_lang_bins plperl.lst plperl
 %endif
-%find_lang plpgsql-%{majorversion}
-cat plpgsql-%{majorversion}.lang >>server.lst
 %if %plpython
-%find_lang plpython-%{majorversion}
-cat plpython-%{majorversion}.lang >>plpython.lst
+find_lang_bins plpython.lst plpython
 %endif
 %if %plpython3
 # plpython3 shares message files with plpython
-%find_lang plpython-%{majorversion}
-cat plpython-%{majorversion}.lang >>plpython3.lst
+find_lang_bins plpython3.lst plpython
 %endif
 %if %pltcl
-%find_lang pltcl-%{majorversion}
-cat pltcl-%{majorversion}.lang >>pltcl.lst
+find_lang_bins pltcl.lst pltcl
 %endif
-%find_lang postgres-%{majorversion}
-cat postgres-%{majorversion}.lang >>server.lst
-%find_lang psql-%{majorversion}
-cat psql-%{majorversion}.lang >>main.lst
 %endif
 
 %post libs -p /sbin/ldconfig 
@@ -862,10 +845,8 @@ make -C postgresql-setup-%{setup_version} check
 %doc README.rpm-dist
 %{_bindir}/clusterdb
 %{_bindir}/createdb
-%{_bindir}/createlang
 %{_bindir}/createuser
 %{_bindir}/dropdb
-%{_bindir}/droplang
 %{_bindir}/dropuser
 %{_bindir}/pg_dump
 %{_bindir}/pg_dumpall
@@ -877,10 +858,8 @@ make -C postgresql-setup-%{setup_version} check
 %{_bindir}/vacuumdb
 %{_mandir}/man1/clusterdb.*
 %{_mandir}/man1/createdb.*
-%{_mandir}/man1/createlang.*
 %{_mandir}/man1/createuser.*
 %{_mandir}/man1/dropdb.*
-%{_mandir}/man1/droplang.*
 %{_mandir}/man1/dropuser.*
 %{_mandir}/man1/pg_dump.*
 %{_mandir}/man1/pg_dumpall.*
@@ -897,17 +876,18 @@ make -C postgresql-setup-%{setup_version} check
 %doc doc/html
 %{_libdir}/pgsql/tutorial/
 
-%files contrib
+%files contrib -f contrib.lst
 %doc contrib/spi/*.example
 %{_bindir}/oid2name
 %{_bindir}/pg_archivecleanup
 %{_bindir}/pg_standby
 %{_bindir}/pg_test_fsync
 %{_bindir}/pg_test_timing
-%{_bindir}/pg_xlogdump
+%{_bindir}/pg_waldump
 %{_bindir}/pgbench
 %{_bindir}/vacuumlo
 %{_datadir}/pgsql/extension/adminpack*
+%{_datadir}/pgsql/extension/amcheck*
 %{_datadir}/pgsql/extension/autoinc*
 %{_datadir}/pgsql/extension/bloom*
 %{_datadir}/pgsql/extension/btree_gin*
@@ -945,12 +925,12 @@ make -C postgresql-setup-%{setup_version} check
 %{_datadir}/pgsql/extension/tablefunc*
 %{_datadir}/pgsql/extension/tcn*
 %{_datadir}/pgsql/extension/timetravel*
-%{_datadir}/pgsql/extension/tsearch2*
 %{_datadir}/pgsql/extension/tsm_system_rows*
 %{_datadir}/pgsql/extension/tsm_system_time*
 %{_datadir}/pgsql/extension/unaccent*
 %{_libdir}/pgsql/_int.so
 %{_libdir}/pgsql/adminpack.so
+%{_libdir}/pgsql/amcheck.so
 %{_libdir}/pgsql/auth_delay.so
 %{_libdir}/pgsql/auto_explain.so
 %{_libdir}/pgsql/autoinc.so
@@ -998,7 +978,6 @@ make -C postgresql-setup-%{setup_version} check
 %{_libdir}/pgsql/tcn.so
 %{_libdir}/pgsql/test_decoding.so
 %{_libdir}/pgsql/timetravel.so
-%{_libdir}/pgsql/tsearch2.so
 %{_libdir}/pgsql/tsm_system_rows.so
 %{_libdir}/pgsql/tsm_system_time.so
 %{_libdir}/pgsql/unaccent.so
@@ -1008,7 +987,7 @@ make -C postgresql-setup-%{setup_version} check
 %{_mandir}/man1/pg_standby.*
 %{_mandir}/man1/pg_test_fsync.*
 %{_mandir}/man1/pg_test_timing.*
-%{_mandir}/man1/pg_xlogdump.*
+%{_mandir}/man1/pg_waldump.*
 %{_mandir}/man1/pgbench.*
 %{_mandir}/man1/vacuumlo.*
 %{_mandir}/man3/dblink*
@@ -1042,9 +1021,9 @@ make -C postgresql-setup-%{setup_version} check
 %{_bindir}/pg_basebackup
 %{_bindir}/pg_controldata
 %{_bindir}/pg_ctl
-%{_bindir}/pg_receivexlog
+%{_bindir}/pg_receivewal
 %{_bindir}/pg_recvlogical
-%{_bindir}/pg_resetxlog
+%{_bindir}/pg_resetwal
 %{_bindir}/pg_rewind
 %{_bindir}/postgres
 %{_bindir}/postgresql-setup
@@ -1072,6 +1051,7 @@ make -C postgresql-setup-%{setup_version} check
 %{_libdir}/pgsql/euc2004_sjis2004.so
 %{_libdir}/pgsql/libpqwalreceiver.so
 %{_libdir}/pgsql/pg_prewarm.so
+%{_libdir}/pgsql/pgoutput.so
 %{_libdir}/pgsql/plpgsql.so
 %dir %{_libexecdir}/initscripts/legacy-actions/postgresql
 %{_libexecdir}/initscripts/legacy-actions/postgresql/*
@@ -1084,8 +1064,8 @@ make -C postgresql-setup-%{setup_version} check
 %{_mandir}/man1/pg_basebackup.*
 %{_mandir}/man1/pg_controldata.*
 %{_mandir}/man1/pg_ctl.*
-%{_mandir}/man1/pg_receivexlog.*
-%{_mandir}/man1/pg_resetxlog.*
+%{_mandir}/man1/pg_receivewal.*
+%{_mandir}/man1/pg_resetwal.*
 %{_mandir}/man1/pg_rewind.*
 %{_mandir}/man1/postgres.*
 %{_mandir}/man1/postgresql-setup.*
@@ -1134,11 +1114,7 @@ make -C postgresql-setup-%{setup_version} check
 
 %if %pltcl
 %files pltcl -f pltcl.lst
-%{_bindir}/pltcl_delmod
-%{_bindir}/pltcl_listmod
-%{_bindir}/pltcl_loadmod
 %{_datadir}/pgsql/extension/pltcl*
-%{_datadir}/pgsql/unknown.pltcl
 %{_libdir}/pgsql/pltcl.so
 %endif
 
@@ -1161,6 +1137,10 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Fri Oct 06 2017 Pavel Raiskup <praiskup@redhat.com> - 10.0-1
+- update to 10.0 per release notes:
+  https://www.postgresql.org/docs/10/static/release-10.html
+
 * Tue Sep 05 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.5-2
 - move %%_libdir/pgsql into *-libs subpackage
 
