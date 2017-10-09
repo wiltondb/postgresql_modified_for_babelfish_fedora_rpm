@@ -718,12 +718,14 @@ install -m 644 %{SOURCE11} $RPM_BUILD_ROOT%{?_localstatedir}/lib/pgsql/.bash_pro
 	rm bin/pg_dump
 	rm bin/pg_dumpall
 	rm bin/pg_restore
+	rm bin/pgbench
 	rm bin/psql
 	rm bin/reindexdb
 	rm bin/vacuumdb
 	rm -rf share/doc
 	rm -rf share/man
 	rm -rf share/tsearch_data
+	rm -rf lib/*.a
 	rm share/*.bki
 	rm share/*description
 	rm share/*.sample
@@ -1105,17 +1107,18 @@ make -C postgresql-setup-%{setup_version} check
 
 %if %upgrade
 %files upgrade
-%{_libdir}/pgsql/postgresql-%{prevmajorversion}
+%{_libdir}/pgsql/postgresql-%{prevmajorversion}/bin
+%exclude %{_libdir}/pgsql/postgresql-%{prevmajorversion}/bin/pg_config
+%{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib
+%exclude %{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/pgxs
+%exclude %{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/pkgconfig
+%{_libdir}/pgsql/postgresql-%{prevmajorversion}/share
 
 %files upgrade-devel
 %{_libdir}/pgsql/postgresql-%{prevmajorversion}/bin/pg_config
-%{_libdir}/pgsql/postgresql-%{prevmajorversion}/include/*
-%{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/dict_snowball.so
-%{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/libecpg*
-%{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/libpg*
-%{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/libpq*
-%{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/pgxs/*
-%{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/plpgsql.so
+%{_libdir}/pgsql/postgresql-%{prevmajorversion}/include
+%{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/pkgconfig
+%{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/pgxs
 %endif
 
 %if %plperl
@@ -1149,6 +1152,9 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Mon Oct 09 2017 Pavel Raiskup <praiskup@redhat.com> - 10.0-2
+- stricter separation of files in upgrade/upgrade-devel
+
 * Mon Oct 09 2017 Jozef Mlich <jmlich@redhat.com> - 10.0-2
 - support for upgrade with extenstions
   i.e the postgresql-upgrade-devel subpackage was added (rhbz#1475177)
