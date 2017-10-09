@@ -63,7 +63,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -280,6 +280,16 @@ Requires: %{name}-libs%{?_isa} = %{version}-%{release}
 The postgresql-upgrade package contains the pg_upgrade utility and supporting
 files needed for upgrading a PostgreSQL database from the previous major
 version of PostgreSQL.
+
+%package upgrade-devel
+Summary: Support for build of extensions required for upgrade process
+Group: Development/Libraries
+Requires: %{name}-upgrade%{?_isa} = %{version}-%{release}
+
+%description upgrade-devel
+The postgresql-devel package contains the header files and libraries
+needed to compile C or C++ applications which are necessary in upgrade
+process.
 %endif
 
 
@@ -705,20 +715,12 @@ install -m 644 %{SOURCE11} $RPM_BUILD_ROOT%{?_localstatedir}/lib/pgsql/.bash_pro
 	rm bin/ecpg
 	rm bin/initdb
 	rm bin/pg_basebackup
-	rm bin/pg_config
 	rm bin/pg_dump
 	rm bin/pg_dumpall
 	rm bin/pg_restore
 	rm bin/psql
 	rm bin/reindexdb
 	rm bin/vacuumdb
-	rm -rf include
-	rm lib/dict_snowball.so
-	rm lib/libecpg*
-	rm lib/libpg*
-	rm lib/libpq*
-	rm -rf lib/pgxs
-	rm lib/plpgsql.so
 	rm -rf share/doc
 	rm -rf share/man
 	rm -rf share/tsearch_data
@@ -1104,6 +1106,16 @@ make -C postgresql-setup-%{setup_version} check
 %if %upgrade
 %files upgrade
 %{_libdir}/pgsql/postgresql-%{prevmajorversion}
+
+%files upgrade-devel
+%{_libdir}/pgsql/postgresql-%{prevmajorversion}/bin/pg_config
+%{_libdir}/pgsql/postgresql-%{prevmajorversion}/include/*
+%{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/dict_snowball.so
+%{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/libecpg*
+%{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/libpg*
+%{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/libpq*
+%{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/pgxs/*
+%{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/plpgsql.so
 %endif
 
 %if %plperl
@@ -1137,6 +1149,10 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Mon Oct 09 2017 Jozef Mlich <jmlich@redhat.com> - 10.0-2
+- support for upgrade with extenstions
+  i.e the postgresql-upgrade-devel subpackage was added (rhbz#1475177)
+
 * Fri Oct 06 2017 Pavel Raiskup <praiskup@redhat.com> - 10.0-1
 - update to 10.0 per release notes:
   https://www.postgresql.org/docs/10/static/release-10.html
