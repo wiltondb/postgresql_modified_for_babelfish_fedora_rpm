@@ -63,7 +63,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -215,6 +215,7 @@ Requires: systemd
 # This will automatically guard against incompatible server & plugin
 # installation (#1008939, #1007840)
 Provides: %{name}-server(:MODULE_COMPAT_%{majorversion})
+Provides: bundled(postgresql-setup) = %setup_version
 
 %description server
 PostgreSQL is an advanced Object-Relational database management system (DBMS).
@@ -275,6 +276,7 @@ Summary: Support for upgrading from the previous major release of PostgreSQL
 Group: Applications/Databases
 Requires: %{name}-server%{?_isa} = %{version}-%{release}
 Requires: %{name}-libs%{?_isa} = %{version}-%{release}
+Provides: bundled(postgresql-libs) = %prevversion
 
 %description upgrade
 The postgresql-upgrade package contains the pg_upgrade utility and supporting
@@ -1152,6 +1154,9 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Thu Oct 12 2017 Pavel Raiskup <praiskup@redhat.com> - 10.0-3
+- confess that we bundle setup scripts and previous version of ourseleves
+
 * Mon Oct 09 2017 Pavel Raiskup <praiskup@redhat.com> - 10.0-2
 - stricter separation of files in upgrade/upgrade-devel
 
