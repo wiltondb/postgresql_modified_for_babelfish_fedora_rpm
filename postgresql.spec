@@ -77,6 +77,7 @@ Url: http://www.postgresql.org/
 # but update when bugs affecting pg_dump output are fixed.
 %global prevversion 9.6.5
 %global prevmajorversion 9.6
+%global prev_prefix %{_libdir}/pgsql/postgresql-%{prevmajorversion}
 
 %global setup_version 5.1
 
@@ -615,7 +616,7 @@ test "$test_failure" -eq 0
 	CFLAGS="$CFLAGS -fno-aggressive-loop-optimizations" ./configure \
 		--build=%{_build} \
 		--host=%{_host} \
-		--prefix=%{_libdir}/pgsql/postgresql-%{prevmajorversion} \
+		--prefix=%prev_prefix \
 		--disable-rpath \
 %if %beta
 		--enable-debug \
@@ -734,6 +735,9 @@ install -m 644 %{SOURCE11} $RPM_BUILD_ROOT%{?_localstatedir}/lib/pgsql/.bash_pro
 	rm share/*.sql
 	rm share/*.txt
 	popd
+	cat <<EOF > $RPM_BUILD_ROOT%macrosdir/macros.%name-upgrade
+%%postgresql_upgrade_prefix %prev_prefix
+EOF
 %endif
 
 
@@ -1101,7 +1105,7 @@ make -C postgresql-setup-%{setup_version} check
 %{_mandir}/man1/ecpg.*
 %{_mandir}/man1/pg_config.*
 %{_mandir}/man3/SPI_*
-%{macrosdir}/*
+%{macrosdir}/macros.%name
 
 %files static
 %{_libdir}/libpgcommon.a
@@ -1121,6 +1125,7 @@ make -C postgresql-setup-%{setup_version} check
 %{_libdir}/pgsql/postgresql-%{prevmajorversion}/include
 %{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/pkgconfig
 %{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/pgxs
+%{macrosdir}/macros.%name-upgrade
 %endif
 
 %if %plperl
@@ -1156,6 +1161,7 @@ make -C postgresql-setup-%{setup_version} check
 %changelog
 * Thu Oct 12 2017 Pavel Raiskup <praiskup@redhat.com> - 10.0-3
 - confess that we bundle setup scripts and previous version of ourseleves
+- provide %%postgresql_upgrade_prefix macro
 
 * Mon Oct 09 2017 Pavel Raiskup <praiskup@redhat.com> - 10.0-2
 - stricter separation of files in upgrade/upgrade-devel
