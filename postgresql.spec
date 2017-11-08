@@ -63,7 +63,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -79,7 +79,7 @@ Url: http://www.postgresql.org/
 %global prevmajorversion 9.6
 %global prev_prefix %{_libdir}/pgsql/postgresql-%{prevmajorversion}
 
-%global setup_version 5.1
+%global setup_version 6.0
 
 %global service_name postgresql.service
 Source0: https://ftp.postgresql.org/pub/source/v%{version}/postgresql-%{version}.tar.bz2
@@ -1078,8 +1078,10 @@ make -C postgresql-setup-%{setup_version} check
 %{_mandir}/man1/pg_resetwal.*
 %{_mandir}/man1/pg_rewind.*
 %{_mandir}/man1/postgres.*
+%{_mandir}/man1/postgresql-new-systemd-unit.*
 %{_mandir}/man1/postgresql-setup.*
 %{_mandir}/man1/postmaster.*
+%{_sbindir}/postgresql-new-systemd-unit
 %{_tmpfilesdir}/postgresql.conf
 %{_unitdir}/*postgresql*.service
 %attr(700,postgres,postgres) %dir %{?_localstatedir}/lib/pgsql
@@ -1159,6 +1161,9 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Mon Nov 06 2017 Pavel Raiskup <praiskup@redhat.com> - 10.0-4
+- rebase to new postgresql-setup 6.0 version, to fix CVE-2017-15097
+
 * Thu Oct 12 2017 Pavel Raiskup <praiskup@redhat.com> - 10.0-3
 - confess that we bundle setup scripts and previous version of ourseleves
 - provide %%postgresql_upgrade_prefix macro
