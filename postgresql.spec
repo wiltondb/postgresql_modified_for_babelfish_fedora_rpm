@@ -63,7 +63,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -79,7 +79,7 @@ Url: http://www.postgresql.org/
 %global prevmajorversion 9.6
 %global prev_prefix %{_libdir}/pgsql/postgresql-%{prevmajorversion}
 
-%global setup_version 6.0
+%global setup_version 7.0
 
 %global service_name postgresql.service
 Source0: https://ftp.postgresql.org/pub/source/v%{version}/postgresql-%{version}.tar.bz2
@@ -630,7 +630,6 @@ test "$test_failure" -eq 0
 %endif
 
 %install
-
 cd postgresql-setup-%{setup_version}
 make install DESTDIR=$RPM_BUILD_ROOT
 cd ..
@@ -1161,6 +1160,9 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Tue Nov 14 2017 Pavel Raiskup <praiskup@redhat.com> - 10.1-2
+- postgresql-setup v7.0
+
 * Wed Nov 08 2017 Pavel Raiskup <praiskup@redhat.com> - 10.1-1
 - update to 10.1 per release notes:
   https://www.postgresql.org/docs/10/static/release-10-1.html
