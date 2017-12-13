@@ -63,7 +63,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -425,57 +425,59 @@ export CFLAGS
 # distclean and do it again for the "normal" build.  Note that the installed
 # Makefile.global will reflect the python 2 build, which seems appropriate
 # since that's still considered the default plpython version.
+common_configure_options='
+	--disable-rpath
+%if %beta
+	--enable-debug
+	--enable-cassert
+%endif
+%if %plperl
+	--with-perl
+%endif
+%if %pltcl
+	--with-tcl
+	--with-tclconfig=%_libdir
+%endif
+%if %ldap
+	--with-ldap
+%endif
+%if %ssl
+	--with-openssl
+%endif
+%if %pam
+	--with-pam
+%endif
+%if %kerberos
+	--with-krb5
+	--with-gssapi
+%endif
+%if %uuid
+	--with-ossp-uuid
+%endif
+%if %xml
+	--with-libxml
+	--with-libxslt
+%endif
+%if %nls
+	--enable-nls
+%endif
+%if %sdt
+	--enable-dtrace
+%endif
+%if %selinux
+	--with-selinux
+%endif
+	--with-system-tzdata=%_datadir/zoneinfo
+	--datadir=%_datadir/pgsql
+'
+
 %if %plpython3
 
 export PYTHON=/usr/bin/python3
 
 # These configure options must match main build
-%configure --disable-rpath \
-%if %beta
-	--enable-debug \
-	--enable-cassert \
-%endif
-%if %plperl
-	--with-perl \
-%endif
-%if %pltcl
-	--with-tcl \
-	--with-tclconfig=%{_libdir} \
-%endif
-%if %plpython3
-	--with-python \
-%endif
-%if %ldap
-	--with-ldap \
-%endif
-%if %ssl
-	--with-openssl \
-%endif
-%if %pam
-	--with-pam \
-%endif
-%if %kerberos
-	--with-krb5 \
-	--with-gssapi \
-%endif
-%if %uuid
-	--with-ossp-uuid \
-%endif
-%if %xml
-	--with-libxml \
-	--with-libxslt \
-%endif
-%if %nls
-	--enable-nls \
-%endif
-%if %sdt
-	--enable-dtrace \
-%endif
-%if %selinux
-	--with-selinux \
-%endif
-	--with-system-tzdata=%{_datadir}/zoneinfo \
-	--datadir=%{_datadir}/pgsql
+%configure $common_configure_options \
+	--with-python
 
 # Fortunately we don't need to build much except plpython itself.
 make %{?_smp_mflags} -C src/pl/plpython all
@@ -487,58 +489,15 @@ cp src/Makefile.global src/Makefile.global.python3
 
 make distclean
 
-%endif
+%endif # %%plpython3
 
 unset PYTHON
 
-# Normal (not python3) build begins here
-
-%configure --disable-rpath \
-%if %beta
-	--enable-debug \
-	--enable-cassert \
-%endif
-%if %plperl
-	--with-perl \
-%endif
-%if %pltcl
-	--with-tcl \
-	--with-tclconfig=%{_libdir} \
-%endif
+# Normal (python2) build begins here
+%configure $common_configure_options \
 %if %plpython
-	--with-python \
+	--with-python
 %endif
-%if %ldap
-	--with-ldap \
-%endif
-%if %ssl
-	--with-openssl \
-%endif
-%if %pam
-	--with-pam \
-%endif
-%if %kerberos
-	--with-krb5 \
-	--with-gssapi \
-%endif
-%if %uuid
-	--with-ossp-uuid \
-%endif
-%if %xml
-	--with-libxml \
-	--with-libxslt \
-%endif
-%if %nls
-	--enable-nls \
-%endif
-%if %sdt
-	--enable-dtrace \
-%endif
-%if %selinux
-	--with-selinux \
-%endif
-	--with-system-tzdata=%_datadir/zoneinfo \
-	--datadir=%_datadir/pgsql
 
 make %{?_smp_mflags} world
 
@@ -1160,6 +1119,9 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Wed Dec 13 2017 Pavel Raiskup <praiskup@redhat.com> - 10.1-3
+- unify %%configure options for python2/python3 configure
+
 * Tue Nov 14 2017 Pavel Raiskup <praiskup@redhat.com> - 10.1-2
 - postgresql-setup v7.0
 
