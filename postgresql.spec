@@ -448,7 +448,6 @@ common_configure_options='
 	--with-pam
 %endif
 %if %kerberos
-	--with-krb5
 	--with-gssapi
 %endif
 %if %uuid
@@ -1121,6 +1120,7 @@ make -C postgresql-setup-%{setup_version} check
 %changelog
 * Wed Dec 13 2017 Pavel Raiskup <praiskup@redhat.com> - 10.1-3
 - unify %%configure options for python2/python3 configure
+- drop --with-krb5 option, not supported since PostgreSQL 9.4
 
 * Tue Nov 14 2017 Pavel Raiskup <praiskup@redhat.com> - 10.1-2
 - postgresql-setup v7.0
