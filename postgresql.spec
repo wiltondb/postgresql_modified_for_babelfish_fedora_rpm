@@ -122,7 +122,7 @@ BuildRequires: multilib-rpm-config
 BuildRequires: m4 elinks docbook-utils help2man
 
 %if %plpython
-BuildRequires: python-devel
+BuildRequires: python2-devel
 %endif
 
 %if %plpython3
@@ -317,6 +317,7 @@ Install this if you want to write database functions in Perl.
 Summary: The Python2 procedural language for PostgreSQL
 Group: Applications/Databases
 Requires: %{name}-server%{?_isa} = %{version}-%{release}
+Provides: %{name}-plpython2 = %{version}-%{release}
 
 %description plpython
 The postgresql-plpython package contains the PL/Python procedural language,
@@ -1121,6 +1122,7 @@ make -C postgresql-setup-%{setup_version} check
 * Wed Dec 13 2017 Pavel Raiskup <praiskup@redhat.com> - 10.1-3
 - unify %%configure options for python2/python3 configure
 - drop --with-krb5 option, not supported since PostgreSQL 9.4
+- python packaging - requires/provides s/python/python2/
 
 * Tue Nov 14 2017 Pavel Raiskup <praiskup@redhat.com> - 10.1-2
 - postgresql-setup v7.0
