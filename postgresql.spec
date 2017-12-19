@@ -63,7 +63,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -79,7 +79,7 @@ Url: http://www.postgresql.org/
 %global prevmajorversion 9.6
 %global prev_prefix %{_libdir}/pgsql/postgresql-%{prevmajorversion}
 
-%global setup_version 7.0
+%global setup_version 8.0
 
 %global service_name postgresql.service
 Source0: https://ftp.postgresql.org/pub/source/v%{version}/postgresql-%{version}.tar.bz2
@@ -115,7 +115,7 @@ BuildRequires: perl(ExtUtils::Embed), perl-devel
 BuildRequires: perl-generators
 %endif
 BuildRequires: readline-devel zlib-devel
-BuildRequires: systemd util-linux
+BuildRequires: systemd systemd-devel util-linux
 BuildRequires: multilib-rpm-config
 
 # postgresql-setup build requires
@@ -469,6 +469,7 @@ common_configure_options='
 %endif
 	--with-system-tzdata=%_datadir/zoneinfo
 	--datadir=%_datadir/pgsql
+	--with-systemd
 '
 
 %if %plpython3
@@ -1024,7 +1025,6 @@ make -C postgresql-setup-%{setup_version} check
 %dir %{_libexecdir}/initscripts/legacy-actions/postgresql
 %{_libexecdir}/initscripts/legacy-actions/postgresql/*
 %{_libexecdir}/postgresql-check-db-dir
-%{_libexecdir}/postgresql-ctl
 %dir %{_sysconfdir}/postgresql-setup
 %dir %{_sysconfdir}/postgresql-setup/upgrade
 %config %{_sysconfdir}/postgresql-setup/upgrade/*.conf
@@ -1119,6 +1119,10 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Tue Dec 19 2017 Pavel Raiskup <praiskup@redhat.com> - 10.1-4
+- configure with --with-systemd (rhbz#1414314)
+- disable startup timeout of PostgreSQL service (rhbz#1525477)
+
 * Wed Dec 13 2017 Pavel Raiskup <praiskup@redhat.com> - 10.1-3
 - unify %%configure options for python2/python3 configure
 - drop --with-krb5 option, not supported since PostgreSQL 9.4
