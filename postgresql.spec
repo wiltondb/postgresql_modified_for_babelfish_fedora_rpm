@@ -59,7 +59,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1115,6 +1115,9 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Sat Jan 20 2018 Björn Esser <besser82@fedoraproject.org> - 10.1-5
+- Rebuilt for switch to libxcrypt
+
 * Tue Dec 19 2017 Pavel Raiskup <praiskup@redhat.com> - 10.1-4
 - configure with --with-systemd (rhbz#1414314)
 - disable startup timeout of PostgreSQL service (rhbz#1525477)
