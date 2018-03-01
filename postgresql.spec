@@ -412,7 +412,7 @@ cd ..
 CFLAGS="${CFLAGS:-%optflags}"
 %ifarch %{power64}
 # See the bug #1051075, ppc64 should benefit from -O3
-CFLAGS=`echo $CFLAGS | xargs -n 1 | sed 's|-O2|-O3|g' | xargs -n 100`
+# CFLAGS=`echo $CFLAGS | xargs -n 1 | sed 's|-O2|-O3|g' | xargs -n 100`
 %endif
 # Strip out -ffast-math from CFLAGS....
 CFLAGS=`echo $CFLAGS|xargs -n 1|grep -v ffast-math|xargs -n 100`
