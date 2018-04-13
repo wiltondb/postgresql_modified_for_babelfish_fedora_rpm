@@ -59,7 +59,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -74,6 +74,7 @@ Url: http://www.postgresql.org/
 %global prevversion 9.6.8
 %global prevmajorversion 9.6
 %global prev_prefix %{_libdir}/pgsql/postgresql-%{prevmajorversion}
+%global precise_version %{?epoch:%epoch:}%version-%release
 
 %global setup_version 8.0
 
@@ -167,7 +168,7 @@ BuildRequires: libselinux-devel
 %endif
 
 # main package requires -libs subpackage
-Requires: %{name}-libs%{?_isa} = %{version}-%{release}
+Requires: %{name}-libs%{?_isa} = %precise_version
 
 # https://bugzilla.redhat.com/1464368
 %global __provides_exclude_from %{_libdir}/pgsql
@@ -185,7 +186,6 @@ postgresql-server sub-package.
 %package libs
 Summary: The shared libraries required for any PostgreSQL clients
 Group: Applications/Databases
-Provides: libpq.so = %{version}-%{release}
 # for /sbin/ldconfig
 Requires(post): glibc
 Requires(postun): glibc
@@ -200,8 +200,8 @@ PostgreSQL server.
 %package server
 Summary: The programs needed to create and run a PostgreSQL server
 Group: Applications/Databases
-Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: %{name}-libs%{?_isa} = %{version}-%{release}
+Requires: %{name}%{?_isa} = %precise_version
+Requires: %{name}-libs%{?_isa} = %precise_version
 Requires(pre): /usr/sbin/useradd
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires: systemd
@@ -225,9 +225,9 @@ and maintain PostgreSQL databases.
 %package docs
 Summary: Extra documentation for PostgreSQL
 Group: Applications/Databases
-Requires: %{name}%{?_isa} = %{version}-%{release}
+Requires: %{name}%{?_isa} = %precise_version
 # Just for more intuitive documentation installation
-Provides: %{name}-doc = %{version}-%{release}
+Provides: %{name}-doc = %precise_version
 
 %description docs
 The postgresql-docs package contains some additional documentation for
@@ -238,8 +238,8 @@ and source files for the PostgreSQL tutorial.
 %package contrib
 Summary: Extension modules distributed with PostgreSQL
 Group: Applications/Databases
-Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: %{name}-libs%{?_isa} = %{version}-%{release}
+Requires: %{name}%{?_isa} = %precise_version
+Requires: %{name}-libs%{?_isa} = %precise_version
 
 %description contrib
 The postgresql-contrib package contains various extension modules that are
@@ -249,7 +249,7 @@ included in the PostgreSQL distribution.
 %package devel
 Summary: PostgreSQL development header files and libraries
 Group: Development/Libraries
-Requires: %{name}-libs%{?_isa} = %{version}-%{release}
+Requires: %{name}-libs%{?_isa} = %precise_version
 
 %description devel
 The postgresql-devel package contains the header files and libraries
@@ -261,7 +261,7 @@ to develop applications which will interact with a PostgreSQL server.
 
 %package static
 Summary: Statically linked PostgreSQL libraries
-Requires: %{name}-devel%{?_isa} = %{version}-%{release}
+Requires: %{name}-devel%{?_isa} = %precise_version
 
 %description static
 Statically linked PostgreSQL libraries that do not have dynamically linked
@@ -272,8 +272,8 @@ counterparts.
 %package upgrade
 Summary: Support for upgrading from the previous major release of PostgreSQL
 Group: Applications/Databases
-Requires: %{name}-server%{?_isa} = %{version}-%{release}
-Requires: %{name}-libs%{?_isa} = %{version}-%{release}
+Requires: %{name}-server%{?_isa} = %precise_version
+Requires: %{name}-libs%{?_isa} = %precise_version
 Provides: bundled(postgresql-libs) = %prevversion
 
 %description upgrade
@@ -284,7 +284,7 @@ version of PostgreSQL.
 %package upgrade-devel
 Summary: Support for build of extensions required for upgrade process
 Group: Development/Libraries
-Requires: %{name}-upgrade%{?_isa} = %{version}-%{release}
+Requires: %{name}-upgrade%{?_isa} = %precise_version
 
 %description upgrade-devel
 The postgresql-devel package contains the header files and libraries
@@ -297,7 +297,7 @@ process.
 %package plperl
 Summary: The Perl procedural language for PostgreSQL
 Group: Applications/Databases
-Requires: %{name}-server%{?_isa} = %{version}-%{release}
+Requires: %{name}-server%{?_isa} = %precise_version
 Requires: perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 %if %runselftest
 BuildRequires: perl(Data::Dumper)
@@ -313,8 +313,8 @@ Install this if you want to write database functions in Perl.
 %package plpython
 Summary: The Python2 procedural language for PostgreSQL
 Group: Applications/Databases
-Requires: %{name}-server%{?_isa} = %{version}-%{release}
-Provides: %{name}-plpython2 = %{version}-%{release}
+Requires: %{name}-server%{?_isa} = %precise_version
+Provides: %{name}-plpython2 = %precise_version
 
 %description plpython
 The postgresql-plpython package contains the PL/Python procedural language,
@@ -326,7 +326,7 @@ Install this if you want to write database functions in Python 2.
 %package plpython3
 Summary: The Python3 procedural language for PostgreSQL
 Group: Applications/Databases
-Requires: %{name}-server%{?_isa} = %{version}-%{release}
+Requires: %{name}-server%{?_isa} = %precise_version
 
 %description plpython3
 The postgresql-plpython3 package contains the PL/Python3 procedural language,
@@ -338,7 +338,7 @@ Install this if you want to write database functions in Python 3.
 %package pltcl
 Summary: The Tcl procedural language for PostgreSQL
 Group: Applications/Databases
-Requires: %{name}-server%{?_isa} = %{version}-%{release}
+Requires: %{name}-server%{?_isa} = %precise_version
 Requires: tcl-pgtcl
 
 %description pltcl
@@ -351,8 +351,8 @@ Install this if you want to write database functions in Tcl.
 %package test
 Summary: The test suite distributed with PostgreSQL
 Group: Applications/Databases
-Requires: %{name}-server%{?_isa} = %{version}-%{release}
-Requires: %{name}-devel%{?_isa} = %{version}-%{release}
+Requires: %{name}-server%{?_isa} = %precise_version
+Requires: %{name}-devel%{?_isa} = %precise_version
 
 %description test
 The postgresql-test package contains files needed for various tests for the
@@ -1116,6 +1116,10 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Fri Apr 13 2018 Pavel Raiskup <praiskup@redhat.com> - 10.3-2
+- define %%precise_version helper macro
+- drop explicit libpq.so provide from *-libs
+
 * Thu Mar 01 2018 Pavel Raiskup <praiskup@redhat.com> - 10.3-1
 - update to 10.3 per release notes:
   https://www.postgresql.org/docs/10/static/release-10-3.html
