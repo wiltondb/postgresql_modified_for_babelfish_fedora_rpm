@@ -259,6 +259,15 @@ Embedded C Postgres preprocessor. You need to install this package if you want
 to develop applications which will interact with a PostgreSQL server.
 
 
+%package test-rpm-macros
+Summary: Convenience RPM macros for build-time testing against PostgreSQL server
+Requires: %{name}-server = %precise_version
+
+%description test-rpm-macros
+This package is meant to be added as BuildRequires: dependency of other packages
+that want to run build-time testsuite against running PostgreSQL server.
+
+
 %package static
 Summary: Statically linked PostgreSQL libraries
 Requires: %{name}-devel%{?_isa} = %precise_version
@@ -1011,7 +1020,6 @@ make -C postgresql-setup-%{setup_version} check
 %{_datadir}/pgsql/tsearch_data/
 %dir %{_datadir}/postgresql-setup
 %{_datadir}/postgresql-setup/library.sh
-%{_datadir}/postgresql-setup/postgresql_pkg_tests.sh
 %{_libdir}/pgsql/*_and_*.so
 %{_libdir}/pgsql/dict_snowball.so
 %{_libdir}/pgsql/euc2004_sjis2004.so
@@ -1063,6 +1071,12 @@ make -C postgresql-setup-%{setup_version} check
 %{_mandir}/man1/pg_config.*
 %{_mandir}/man3/SPI_*
 %{macrosdir}/macros.%name
+
+
+%files test-rpm-macros
+%{macrosdir}/macros.%name-test
+%{_datadir}/postgresql-setup/postgresql_pkg_tests.sh
+
 
 %files static
 %{_libdir}/libpgcommon.a
@@ -1120,6 +1134,7 @@ make -C postgresql-setup-%{setup_version} check
 - define %%precise_version helper macro
 - drop explicit libpq.so provide from *-libs
 - update postgresql-setup tarball
+- add postgresql-test-rpm-macros package
 
 * Thu Mar 01 2018 Pavel Raiskup <praiskup@redhat.com> - 10.3-1
 - update to 10.3 per release notes:
