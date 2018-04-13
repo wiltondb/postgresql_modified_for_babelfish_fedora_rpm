@@ -191,7 +191,7 @@ Requires(post): glibc
 Requires(postun): glibc
 
 %description libs
-The postgresql-libs package provides the essential shared libraries for any 
+The postgresql-libs package provides the essential shared libraries for any
 PostgreSQL client program or interface. You will need to install this package
 to use any other PostgreSQL package or any clients that need to connect to a
 PostgreSQL server.
@@ -290,6 +290,7 @@ The postgresql-upgrade package contains the pg_upgrade utility and supporting
 files needed for upgrading a PostgreSQL database from the previous major
 version of PostgreSQL.
 
+
 %package upgrade-devel
 Summary: Support for build of extensions required for upgrade process
 Group: Development/Libraries
@@ -318,6 +319,7 @@ which is an extension to the PostgreSQL database server.
 Install this if you want to write database functions in Perl.
 %endif
 
+
 %if %plpython
 %package plpython
 Summary: The Python2 procedural language for PostgreSQL
@@ -331,6 +333,7 @@ which is an extension to the PostgreSQL database server.
 Install this if you want to write database functions in Python 2.
 %endif
 
+
 %if %plpython3
 %package plpython3
 Summary: The Python3 procedural language for PostgreSQL
@@ -342,6 +345,7 @@ The postgresql-plpython3 package contains the PL/Python3 procedural language,
 which is an extension to the PostgreSQL database server.
 Install this if you want to write database functions in Python 3.
 %endif
+
 
 %if %pltcl
 %package pltcl
@@ -356,6 +360,7 @@ which is an extension to the PostgreSQL database server.
 Install this if you want to write database functions in Tcl.
 %endif
 
+
 %if %test
 %package test
 Summary: The test suite distributed with PostgreSQL
@@ -368,6 +373,7 @@ The postgresql-test package contains files needed for various tests for the
 PostgreSQL database management system, including regression tests and
 benchmarks.
 %endif
+
 
 %prep
 ( cd %_sourcedir; sha256sum -c %{SOURCE16}; sha256sum -c %{SOURCE17} )
@@ -391,8 +397,8 @@ tar xfj %{SOURCE3}
 # remove .gitignore files to ensure none get into the RPMs (bug #642210)
 find . -type f -name .gitignore | xargs rm
 
-%build
 
+%build
 # fail quickly and obviously if user tries to build as root
 %if %runselftest
 	if [ x"`id -u`" = x0 ]; then
@@ -595,6 +601,7 @@ test "$test_failure" -eq 0
 	popd
 %endif
 
+
 %install
 cd postgresql-setup-%{setup_version}
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -613,7 +620,6 @@ engine          %{_libdir}/pgsql/postgresql-%{prevmajorversion}/bin
 description     "Upgrade data from system PostgreSQL version (PostgreSQL %{prevmajorversion})"
 redhat_sockets_hack no
 EOF
-
 
 make DESTDIR=$RPM_BUILD_ROOT install-world
 
@@ -712,7 +718,7 @@ EOF
 	# Makefiles, however.
 	mkdir -p $RPM_BUILD_ROOT%{_libdir}/pgsql/test
 	cp -a src/test/regress $RPM_BUILD_ROOT%{_libdir}/pgsql/test
-	# pg_regress binary should be only in one subpackage, 
+	# pg_regress binary should be only in one subpackage,
 	# there will be a symlink from -test to -devel
 	rm -f $RPM_BUILD_ROOT%{_libdir}/pgsql/test/regress/pg_regress
 	ln -sf ../../pgxs/src/test/regress/pg_regress $RPM_BUILD_ROOT%{_libdir}/pgsql/test/regress/pg_regress
@@ -784,8 +790,10 @@ find_lang_bins pltcl.lst pltcl
 %endif
 %endif
 
-%post libs -p /sbin/ldconfig 
-%postun libs -p /sbin/ldconfig 
+
+%post libs -p /sbin/ldconfig
+%postun libs -p /sbin/ldconfig
+
 
 %pre server
 /usr/sbin/groupadd -g 26 -o -r postgres >/dev/null 2>&1 || :
@@ -812,8 +820,8 @@ make -C postgresql-setup-%{setup_version} check
 
 %clean
 
-# FILES section.
 
+# FILES sections.
 %files -f main.lst
 %doc doc/KNOWN_BUGS doc/MISSING_FEATURES doc/TODO
 %doc COPYRIGHT README HISTORY doc/bug.template
@@ -846,10 +854,12 @@ make -C postgresql-setup-%{setup_version} check
 %{_mandir}/man1/vacuumdb.*
 %{_mandir}/man7/*
 
+
 %files docs
 %doc *-US.pdf
 %doc doc/html
 %{_libdir}/pgsql/tutorial/
+
 
 %files contrib -f contrib.lst
 %doc contrib/spi/*.example
@@ -983,6 +993,7 @@ make -C postgresql-setup-%{setup_version} check
 %{_libdir}/pgsql/pgxml.so
 %endif
 
+
 %files libs -f libs.lst
 %doc COPYRIGHT
 %dir %{_libdir}/pgsql
@@ -990,6 +1001,7 @@ make -C postgresql-setup-%{setup_version} check
 %{_libdir}/libecpg_compat.so.*
 %{_libdir}/libpgtypes.so.*
 %{_libdir}/libpq.so.*
+
 
 %files server -f server.lst
 %{_bindir}/initdb
@@ -1074,13 +1086,14 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %files test-rpm-macros
-%{macrosdir}/macros.%name-test
 %{_datadir}/postgresql-setup/postgresql_pkg_tests.sh
+%{macrosdir}/macros.%name-test
 
 
 %files static
 %{_libdir}/libpgcommon.a
 %{_libdir}/libpgport.a
+
 
 %if %upgrade
 %files upgrade
@@ -1091,6 +1104,7 @@ make -C postgresql-setup-%{setup_version} check
 %exclude %{_libdir}/pgsql/postgresql-%{prevmajorversion}/lib/pkgconfig
 %{_libdir}/pgsql/postgresql-%{prevmajorversion}/share
 
+
 %files upgrade-devel
 %{_libdir}/pgsql/postgresql-%{prevmajorversion}/bin/pg_config
 %{_libdir}/pgsql/postgresql-%{prevmajorversion}/include
@@ -1099,17 +1113,20 @@ make -C postgresql-setup-%{setup_version} check
 %{macrosdir}/macros.%name-upgrade
 %endif
 
+
 %if %plperl
 %files plperl -f plperl.lst
 %{_datadir}/pgsql/extension/plperl*
 %{_libdir}/pgsql/plperl.so
 %endif
 
+
 %if %pltcl
 %files pltcl -f pltcl.lst
 %{_datadir}/pgsql/extension/pltcl*
 %{_libdir}/pgsql/pltcl.so
 %endif
+
 
 %if %plpython
 %files plpython -f plpython.lst
@@ -1118,16 +1135,19 @@ make -C postgresql-setup-%{setup_version} check
 %{_libdir}/pgsql/plpython2.so
 %endif
 
+
 %if %plpython3
 %files plpython3 -f plpython3.lst
 %{_datadir}/pgsql/extension/plpython3*
 %{_libdir}/pgsql/plpython3.so
 %endif
 
+
 %if %test
 %files test
 %attr(-,postgres,postgres) %{_libdir}/pgsql/test
 %endif
+
 
 %changelog
 * Fri Apr 13 2018 Pavel Raiskup <praiskup@redhat.com> - 10.3-2
@@ -1418,8 +1438,8 @@ make -C postgresql-setup-%{setup_version} check
   http://www.postgresql.org/docs/9.3/static/release-9-3-4.html
 
 * Thu Mar 13 2014 Jozef Mlich <jmlich@redhat.com> - 9.3.3-2
-- Fix WAL replay of locking an updated tuple 
-  kudos to Alvaro Herrera 
+- Fix WAL replay of locking an updated tuple
+  kudos to Alvaro Herrera
 
 * Thu Feb 20 2014 Jozef Mlich <jmlich@redhat.com> - 9.3.3-1
 - update to 9.3.3 minor version per release notes:
@@ -2209,5 +2229,5 @@ Resolves: #161470
 - Default to compiling libpq and ECPG as fully thread-safe
 
 - 7.4 Origin.  See previous spec files for previous history. Adapted
-- from Red Hat and PGDG's 7.3.4 RPM, directly descended from 
+- from Red Hat and PGDG's 7.3.4 RPM, directly descended from
 - postgresql-7.3.4-2 as shipped in Fedora Core 1.
