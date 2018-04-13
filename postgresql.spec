@@ -76,7 +76,7 @@ Url: http://www.postgresql.org/
 %global prev_prefix %{_libdir}/pgsql/postgresql-%{prevmajorversion}
 %global precise_version %{?epoch:%epoch:}%version-%release
 
-%global setup_version 8.0
+%global setup_version 8.1
 
 %global service_name postgresql.service
 Source0: https://ftp.postgresql.org/pub/source/v%{version}/postgresql-%{version}.tar.bz2
@@ -1119,6 +1119,7 @@ make -C postgresql-setup-%{setup_version} check
 * Fri Apr 13 2018 Pavel Raiskup <praiskup@redhat.com> - 10.3-2
 - define %%precise_version helper macro
 - drop explicit libpq.so provide from *-libs
+- update postgresql-setup tarball
 
 * Thu Mar 01 2018 Pavel Raiskup <praiskup@redhat.com> - 10.3-1
 - update to 10.3 per release notes:
