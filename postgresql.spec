@@ -709,7 +709,12 @@ install -m 644 %{SOURCE11} $RPM_BUILD_ROOT%{?_localstatedir}/lib/pgsql/.bash_pro
 	rm -rf share/doc
 	rm -rf share/man
 	rm -rf share/tsearch_data
-	rm -rf lib/*.a
+	rm lib/*.a
+	# Drop libpq.  This might need some tweaks once there's
+	# soname bump between %%prevversion and %%version.
+	rm lib/libpq.so*
+	# Drop libraries.
+	rm lib/lib{ecpg,ecpg_compat,pgtypes}.so*
 	rm share/*.bki
 	rm share/*description
 	rm share/*.sample
@@ -1165,6 +1170,7 @@ make -C postgresql-setup-%{setup_version} check
 * Mon Apr 16 2018 Pavel Raiskup <praiskup@redhat.com> - 10.3-3
 - upgrade: package plperl.so and pltcl.so
 - upgrade: package contrib modules
+- upgrade: drop dynamic libraries
 
 * Fri Apr 13 2018 Pavel Raiskup <praiskup@redhat.com> - 10.3-2
 - define %%precise_version helper macro
