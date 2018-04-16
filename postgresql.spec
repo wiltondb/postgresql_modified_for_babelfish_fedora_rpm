@@ -606,7 +606,7 @@ test "$test_failure" -eq 0
 		--with-system-tzdata=/usr/share/zoneinfo
 
 	make %{?_smp_mflags} all
-
+	make -C contrib %{?_smp_mflags} all
 	popd
 %endif
 
@@ -684,6 +684,7 @@ install -m 644 %{SOURCE11} $RPM_BUILD_ROOT%{?_localstatedir}/lib/pgsql/.bash_pro
 %if %upgrade
 	pushd postgresql-%{prevversion}
 	make DESTDIR=$RPM_BUILD_ROOT install
+	make -C contrib DESTDIR=$RPM_BUILD_ROOT install
 	popd
 
 	# remove stuff we don't actually need for upgrade purposes
@@ -1163,6 +1164,7 @@ make -C postgresql-setup-%{setup_version} check
 %changelog
 * Mon Apr 16 2018 Pavel Raiskup <praiskup@redhat.com> - 10.3-3
 - upgrade: package plperl.so and pltcl.so
+- upgrade: package contrib modules
 
 * Fri Apr 13 2018 Pavel Raiskup <praiskup@redhat.com> - 10.3-2
 - define %%precise_version helper macro
