@@ -59,7 +59,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -584,6 +584,12 @@ test "$test_failure" -eq 0
 	# major release!  Also, note we intentionally do not use %%configure
 	# here, because we *don't* want its ideas about installation paths.
 
+	# The set of built server modules here should ideally create superset
+	# of modules we used to ship in %%prevversion (in the installation
+	# the user will upgrade from), including *-contrib or *-pl*
+	# subpackages.  This increases chances that the upgrade from
+	# %%prevversion will work smoothly.
+
 	# The -fno-aggressive-loop-optimizations is hack for #993532
 	CFLAGS="$CFLAGS -fno-aggressive-loop-optimizations" ./configure \
 		--build=%{_build} \
@@ -594,6 +600,9 @@ test "$test_failure" -eq 0
 		--enable-debug \
 		--enable-cassert \
 %endif
+		--with-perl \
+		--with-tcl \
+		--with-tclconfig=%_libdir \
 		--with-system-tzdata=/usr/share/zoneinfo
 
 	make %{?_smp_mflags} all
@@ -705,6 +714,8 @@ install -m 644 %{SOURCE11} $RPM_BUILD_ROOT%{?_localstatedir}/lib/pgsql/.bash_pro
 	rm share/*.sample
 	rm share/*.sql
 	rm share/*.txt
+	rm share/extension/*.sql
+	rm share/extension/*.control
 	popd
 	cat <<EOF > $RPM_BUILD_ROOT%macrosdir/macros.%name-upgrade
 %%postgresql_upgrade_prefix %prev_prefix
@@ -1150,6 +1161,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Mon Apr 16 2018 Pavel Raiskup <praiskup@redhat.com> - 10.3-3
+- upgrade: package plperl.so and pltcl.so
+
 * Fri Apr 13 2018 Pavel Raiskup <praiskup@redhat.com> - 10.3-2
 - define %%precise_version helper macro
 - drop explicit libpq.so provide from *-libs
