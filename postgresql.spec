@@ -59,7 +59,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.3
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -581,14 +581,18 @@ test "$test_failure" -eq 0
 
 	# The upgrade build can be pretty stripped-down, but make sure that
 	# any options that affect on-disk file layout match the previous
-	# major release!  Also, note we intentionally do not use %%configure
-	# here, because we *don't* want its ideas about installation paths.
+	# major release!
 
 	# The set of built server modules here should ideally create superset
 	# of modules we used to ship in %%prevversion (in the installation
 	# the user will upgrade from), including *-contrib or *-pl*
 	# subpackages.  This increases chances that the upgrade from
 	# %%prevversion will work smoothly.
+
+upgrade_configure ()
+{
+	# Note we intentionally do not use %%configure here, because we *don't* want
+	# its ideas about installation paths.
 
 	# The -fno-aggressive-loop-optimizations is hack for #993532
 	CFLAGS="$CFLAGS -fno-aggressive-loop-optimizations" ./configure \
@@ -600,10 +604,31 @@ test "$test_failure" -eq 0
 		--enable-debug \
 		--enable-cassert \
 %endif
+%if %plperl
 		--with-perl \
+%endif
+%if %pltcl
 		--with-tcl \
+%endif
 		--with-tclconfig=%_libdir \
-		--with-system-tzdata=/usr/share/zoneinfo
+		--with-system-tzdata=/usr/share/zoneinfo \
+		"$@"
+}
+
+%if %plpython3
+	export PYTHON=/usr/bin/python3
+	upgrade_configure --with-python
+	make %{?_smp_mflags} -C src/pl/plpython all
+	# save aside the only one file which we are interested here
+	cp src/pl/plpython/plpython3.so ./
+	unset PYTHON
+	make distclean
+%endif
+
+	upgrade_configure \
+%if %plpython
+		--with-python
+%endif
 
 	make %{?_smp_mflags} all
 	make -C contrib %{?_smp_mflags} all
@@ -685,6 +710,10 @@ install -m 644 %{SOURCE11} $RPM_BUILD_ROOT%{?_localstatedir}/lib/pgsql/.bash_pro
 	pushd postgresql-%{prevversion}
 	make DESTDIR=$RPM_BUILD_ROOT install
 	make -C contrib DESTDIR=$RPM_BUILD_ROOT install
+%if %plpython3
+	install -m 755 plpython3.so \
+		$RPM_BUILD_ROOT/%_libdir/pgsql/postgresql-%prevmajorversion/lib
+%endif
 	popd
 
 	# remove stuff we don't actually need for upgrade purposes
@@ -1167,6 +1196,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Thu Apr 19 2018 Pavel Raiskup <praiskup@redhat.com> - 10.3-4
+- upgrade: package plpython*.so modules
+
 * Mon Apr 16 2018 Pavel Raiskup <praiskup@redhat.com> - 10.3-3
 - upgrade: package plperl.so and pltcl.so
 - upgrade: package contrib modules
