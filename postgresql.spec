@@ -59,7 +59,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.3
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -352,7 +352,6 @@ Install this if you want to write database functions in Python 3.
 Summary: The Tcl procedural language for PostgreSQL
 Group: Applications/Databases
 Requires: %{name}-server%{?_isa} = %precise_version
-Requires: tcl-pgtcl
 
 %description pltcl
 The postgresql-pltcl package contains the PL/Tcl procedural language,
@@ -1196,6 +1195,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Thu Apr 26 2018 Pavel Raiskup <praiskup@redhat.com> - 10.3-5
+- pltcl: drop tcl-pltcl dependency (rhbz#1571181)
+
 * Thu Apr 19 2018 Pavel Raiskup <praiskup@redhat.com> - 10.3-4
 - upgrade: package plpython*.so modules
 
