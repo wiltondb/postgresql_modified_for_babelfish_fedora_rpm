@@ -59,7 +59,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.4
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1195,6 +1195,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Tue Jul 03 2018 Petr Pisar <ppisar@redhat.com> - 10.4-4
+- Perl 5.28 rebuild
+
 * Wed Jun 27 2018 Jitka Plesnikova <jplesnik@redhat.com> - 10.4-3
 - Perl 5.28 rebuild
 
