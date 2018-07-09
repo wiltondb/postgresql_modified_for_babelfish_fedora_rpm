@@ -59,7 +59,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.4
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -105,6 +105,7 @@ Patch1: rpm-pgsql.patch
 Patch2: postgresql-logging.patch
 Patch5: postgresql-var-run-socket.patch
 Patch6: postgresql-man.patch
+Patch7: postgresql-ppc64-gcc-workaround.patch
 
 BuildRequires: gcc
 BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk
@@ -381,6 +382,7 @@ benchmarks.
 %patch2 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
@@ -426,7 +428,7 @@ cd ..
 CFLAGS="${CFLAGS:-%optflags}"
 %ifarch %{power64}
 # See the bug #1051075, ppc64 should benefit from -O3
-# CFLAGS=`echo $CFLAGS | xargs -n 1 | sed 's|-O2|-O3|g' | xargs -n 100`
+CFLAGS=`echo $CFLAGS | xargs -n 1 | sed 's|-O2|-O3|g' | xargs -n 100`
 %endif
 # Strip out -ffast-math from CFLAGS....
 CFLAGS=`echo $CFLAGS|xargs -n 1|grep -v ffast-math|xargs -n 100`
@@ -1195,6 +1197,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Mon Jul 09 2018 Pavel Raiskup <praiskup@redhat.com> - 10.4-5
+- re-enable -O3 for 64bit PPC boxes
+
 * Tue Jul 03 2018 Petr Pisar <ppisar@redhat.com> - 10.4-4
 - Perl 5.28 rebuild
 
