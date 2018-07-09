@@ -505,13 +505,15 @@ make distclean
 
 %endif # %%plpython3
 
-unset PYTHON
+PYTHON=/usr/bin/python2
 
 # Normal (python2) build begins here
 %configure $common_configure_options \
 %if %plpython
 	--with-python
 %endif
+
+unset PYTHON
 
 make %{?_smp_mflags} world
 
@@ -596,6 +598,7 @@ upgrade_configure ()
 	# its ideas about installation paths.
 
 	# The -fno-aggressive-loop-optimizations is hack for #993532
+	PYTHON="${PYTHON-/usr/bin/python2}" \
 	CFLAGS="$CFLAGS -fno-aggressive-loop-optimizations" ./configure \
 		--build=%{_build} \
 		--host=%{_host} \
@@ -634,7 +637,7 @@ upgrade_configure ()
 	make %{?_smp_mflags} all
 	make -C contrib %{?_smp_mflags} all
 	popd
-%endif
+%endif # %%upgrade
 
 
 %install
@@ -1199,6 +1202,7 @@ make -C postgresql-setup-%{setup_version} check
 %changelog
 * Mon Jul 09 2018 Pavel Raiskup <praiskup@redhat.com> - 10.4-5
 - re-enable -O3 for 64bit PPC boxes
+- explicitly set PYTHON=python2, /bin/python doesn't exist fc29+
 
 * Tue Jul 03 2018 Petr Pisar <ppisar@redhat.com> - 10.4-4
 - Perl 5.28 rebuild
