@@ -815,14 +815,14 @@ find_lang_bins ()
 		cat "$binary"-%{majorversion}.lang >>$lstfile
 	done
 }
-find_lang_bins devel.lst ecpg
+find_lang_bins devel.lst ecpg pg_config
 find_lang_bins libs.lst ecpglib6 libpq5
 find_lang_bins server.lst \
 	initdb pg_basebackup pg_controldata pg_ctl pg_resetwal pg_rewind plpgsql postgres
 find_lang_bins contrib.lst \
 	pg_archivecleanup pg_test_fsync pg_test_timing pg_waldump
 find_lang_bins  main.lst \
-	pg_config pg_dump pg_upgrade pgscripts psql
+	pg_dump pg_upgrade pgscripts psql
 %if %plperl
 find_lang_bins plperl.lst plperl
 %endif
@@ -1200,6 +1200,7 @@ make -C postgresql-setup-%{setup_version} check
 %changelog
 * Thu Jul 12 2018 Pavel Raiskup <praiskup@redhat.com> - 10.4-6
 - drop ppc64 patch, gcc is already fixed (rhbz#1544349)
+- move pg_config*.mo files into devel subpackage
 
 * Mon Jul 09 2018 Pavel Raiskup <praiskup@redhat.com> - 10.4-5
 - re-enable -O3 for 64bit PPC boxes
