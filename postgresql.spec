@@ -59,7 +59,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.4
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -105,7 +105,6 @@ Patch1: rpm-pgsql.patch
 Patch2: postgresql-logging.patch
 Patch5: postgresql-var-run-socket.patch
 Patch6: postgresql-man.patch
-Patch7: postgresql-ppc64-gcc-workaround.patch
 
 BuildRequires: gcc
 BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk
@@ -382,7 +381,6 @@ benchmarks.
 %patch2 -p1
 %patch5 -p1
 %patch6 -p1
-%patch7 -p1
 
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
@@ -1200,6 +1198,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Thu Jul 12 2018 Pavel Raiskup <praiskup@redhat.com> - 10.4-6
+- drop ppc64 patch, gcc is already fixed (rhbz#1544349)
+
 * Mon Jul 09 2018 Pavel Raiskup <praiskup@redhat.com> - 10.4-5
 - re-enable -O3 for 64bit PPC boxes
 - explicitly set PYTHON=python2, /bin/python doesn't exist fc29+
