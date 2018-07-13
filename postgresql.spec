@@ -59,7 +59,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.4
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1198,6 +1198,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 10.4-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Thu Jul 12 2018 Pavel Raiskup <praiskup@redhat.com> - 10.4-6
 - drop ppc64 patch, gcc is already fixed (rhbz#1544349)
 - move pg_config*.mo files into devel subpackage
