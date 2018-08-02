@@ -59,7 +59,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.4
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -76,7 +76,7 @@ Url: http://www.postgresql.org/
 %global prev_prefix %{_libdir}/pgsql/postgresql-%{prevmajorversion}
 %global precise_version %{?epoch:%epoch:}%version-%release
 
-%global setup_version 8.1
+%global setup_version 8.2
 
 %global service_name postgresql.service
 Source0: https://ftp.postgresql.org/pub/source/v%{version}/postgresql-%{version}.tar.bz2
@@ -1198,6 +1198,10 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Thu Aug 02 2018 Pavel Raiskup <praiskup@redhat.com> - 10.4-8
+- new postgresql-setup, the %%postgresql_tests* macros now start
+  the build-time server on random port number
+
 * Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 10.4-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
