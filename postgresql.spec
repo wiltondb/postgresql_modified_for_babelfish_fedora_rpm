@@ -59,7 +59,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.5
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -375,7 +375,13 @@ benchmarks.
 
 
 %prep
-( cd %_sourcedir; sha256sum -c %{SOURCE16}; sha256sum -c %{SOURCE17} )
+(
+  cd "$(dirname "%{SOURCE0}")"
+  sha256sum -c %{SOURCE16}
+%if %upgrade
+  sha256sum -c %{SOURCE17}
+%endif
+)
 %setup -q -a 12
 %patch1 -p1
 %patch2 -p1
@@ -795,24 +801,14 @@ rm -f $RPM_BUILD_ROOT%{_bindir}/pgsql/hstore_plperl.so
 rm -f $RPM_BUILD_ROOT%{_bindir}/pgsql/hstore_plpython2.so
 %endif
 
-# initialize file lists
-cp /dev/null main.lst
-cp /dev/null libs.lst
-cp /dev/null server.lst
-cp /dev/null contrib.lst
-cp /dev/null devel.lst
-cp /dev/null plperl.lst
-cp /dev/null pltcl.lst
-cp /dev/null plpython.lst
-cp /dev/null plpython3.lst
-
 %if %nls
 find_lang_bins ()
 {
 	lstfile=$1 ; shift
+	cp /dev/null "$lstfile"
 	for binary; do
 		%find_lang "$binary"-%{majorversion}
-		cat "$binary"-%{majorversion}.lang >>$lstfile
+		cat "$binary"-%{majorversion}.lang >>"$lstfile"
 	done
 }
 find_lang_bins devel.lst ecpg pg_config
@@ -821,7 +817,7 @@ find_lang_bins server.lst \
 	initdb pg_basebackup pg_controldata pg_ctl pg_resetwal pg_rewind plpgsql postgres
 find_lang_bins contrib.lst \
 	pg_archivecleanup pg_test_fsync pg_test_timing pg_waldump
-find_lang_bins  main.lst \
+find_lang_bins main.lst \
 	pg_dump pg_upgrade pgscripts psql
 %if %plperl
 find_lang_bins plperl.lst plperl
@@ -1198,6 +1194,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Mon Aug 27 2018 Pavel Raiskup <praiskup@redhat.com> - 10.5-2
+- packaging cleanup
+
 * Wed Aug 08 2018 Pavel Raiskup <praiskup@redhat.com> - 10.5-1
 - update to 10.5 per release notes:
   https://www.postgresql.org/docs/10/static/release-10-5.html
