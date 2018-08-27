@@ -250,6 +250,7 @@ included in the PostgreSQL distribution.
 Summary: PostgreSQL development header files and libraries
 Group: Development/Libraries
 Requires: %{name}-libs%{?_isa} = %precise_version
+Provides: libpq-devel = %precise_version
 
 %description devel
 The postgresql-devel package contains the header files and libraries
@@ -1196,6 +1197,7 @@ make -C postgresql-setup-%{setup_version} check
 %changelog
 * Mon Aug 27 2018 Pavel Raiskup <praiskup@redhat.com> - 10.5-2
 - packaging cleanup
+- devel subpackage to provide libpq-devel (first step for rhbz#1618698)
 
 * Wed Aug 08 2018 Pavel Raiskup <praiskup@redhat.com> - 10.5-1
 - update to 10.5 per release notes:
