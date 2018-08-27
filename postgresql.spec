@@ -59,7 +59,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 10
 Version: 10.5
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -251,6 +251,8 @@ Summary: PostgreSQL development header files and libraries
 Group: Development/Libraries
 Requires: %{name}-libs%{?_isa} = %precise_version
 Provides: libpq-devel = %precise_version
+Provides: libecpg-devel = %precise_version
+Provides: postgresql-server-devel = %precise_version
 
 %description devel
 The postgresql-devel package contains the header files and libraries
@@ -1195,6 +1197,10 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Mon Aug 27 2018 Pavel Raiskup <praiskup@redhat.com> - 10.5-3
+- devel subpackage provides postgresql-server-devel and libecpg-devel
+  (first step for rhbz#1618698)
+
 * Mon Aug 27 2018 Pavel Raiskup <praiskup@redhat.com> - 10.5-2
 - packaging cleanup
 - devel subpackage to provide libpq-devel (first step for rhbz#1618698)
