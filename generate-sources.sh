@@ -1,6 +1,6 @@
 #! /bin/sh
 
-rm sources .gitignore
+rm sources
 set -e
 spectool -S *.spec | cut -d' ' -f2 \
     | grep -E -e 'postgresql-.*\.tar\.*' -e 'postgresql.*\.pdf' | sort | \
@@ -9,5 +9,4 @@ do
     base=`basename "$line"`
     echo " * handling $base"
     sha512sum --tag "$base" >> sources
-    echo "/$base" >> .gitignore
 done

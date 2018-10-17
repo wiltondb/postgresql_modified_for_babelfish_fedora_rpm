@@ -57,9 +57,9 @@
 
 Summary: PostgreSQL client programs
 Name: postgresql
-%global majorversion 10
-Version: 10.5
-Release: 4%{?dist}
+%global majorversion 11
+Version: 11.0
+Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -71,8 +71,8 @@ Url: http://www.postgresql.org/
 # in-place upgrade of an old database.  In most cases it will not be critical
 # that this be kept up with the latest minor release of the previous series;
 # but update when bugs affecting pg_dump output are fixed.
-%global prevversion 9.6.10
-%global prevmajorversion 9.6
+%global prevversion 10.5
+%global prevmajorversion 10
 %global prev_prefix %{_libdir}/pgsql/postgresql-%{prevmajorversion}
 %global precise_version %{?epoch:%epoch:}%version-%release
 
@@ -714,10 +714,8 @@ rm $RPM_BUILD_ROOT/%{_datadir}/man/man1/ecpg.1
 	pushd $RPM_BUILD_ROOT%{_libdir}/pgsql/postgresql-%{prevmajorversion}
 	rm bin/clusterdb
 	rm bin/createdb
-	rm bin/createlang
 	rm bin/createuser
 	rm bin/dropdb
-	rm bin/droplang
 	rm bin/dropuser
 	rm bin/ecpg
 	rm bin/initdb
@@ -799,7 +797,8 @@ find_lang_bins ()
 }
 find_lang_bins devel.lst pg_server_config
 find_lang_bins server.lst \
-	initdb pg_basebackup pg_controldata pg_ctl pg_resetwal pg_rewind plpgsql postgres
+	initdb pg_basebackup pg_controldata pg_ctl pg_resetwal pg_rewind plpgsql \
+	postgres pg_verify_checksums
 find_lang_bins contrib.lst \
 	pg_archivecleanup pg_test_fsync pg_test_timing pg_waldump
 find_lang_bins main.lst \
@@ -901,7 +900,6 @@ make -C postgresql-setup-%{setup_version} check
 %{_datadir}/pgsql/extension/bloom*
 %{_datadir}/pgsql/extension/btree_gin*
 %{_datadir}/pgsql/extension/btree_gist*
-%{_datadir}/pgsql/extension/chkpass*
 %{_datadir}/pgsql/extension/citext*
 %{_datadir}/pgsql/extension/cube*
 %{_datadir}/pgsql/extension/dblink*
@@ -915,6 +913,16 @@ make -C postgresql-setup-%{setup_version} check
 %{_datadir}/pgsql/extension/intagg*
 %{_datadir}/pgsql/extension/intarray*
 %{_datadir}/pgsql/extension/isn*
+%if %{plperl}
+%{_datadir}/pgsql/extension/jsonb_plperl*
+%endif
+%if %{plpython}
+%{_datadir}/pgsql/extension/jsonb_plpythonu*
+%{_datadir}/pgsql/extension/jsonb_plpython2u*
+%endif
+%if %{plpython3}
+%{_datadir}/pgsql/extension/jsonb_plpython3u*
+%endif
 %{_datadir}/pgsql/extension/lo*
 %{_datadir}/pgsql/extension/ltree*
 %{_datadir}/pgsql/extension/moddatetime*
@@ -946,7 +954,6 @@ make -C postgresql-setup-%{setup_version} check
 %{_libdir}/pgsql/bloom.so
 %{_libdir}/pgsql/btree_gin.so
 %{_libdir}/pgsql/btree_gist.so
-%{_libdir}/pgsql/chkpass.so
 %{_libdir}/pgsql/citext.so
 %{_libdir}/pgsql/cube.so
 %{_libdir}/pgsql/dblink.so
@@ -964,6 +971,12 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 %{_libdir}/pgsql/insert_username.so
 %{_libdir}/pgsql/isn.so
+%if %plperl
+%{_libdir}/pgsql/jsonb_plperl.so
+%endif
+%if %plpython
+%{_libdir}/pgsql/jsonb_plpython2.so
+%endif
 %{_libdir}/pgsql/lo.so
 %{_libdir}/pgsql/ltree.so
 %if %plpython
@@ -1026,6 +1039,7 @@ make -C postgresql-setup-%{setup_version} check
 %{_bindir}/pg_recvlogical
 %{_bindir}/pg_resetwal
 %{_bindir}/pg_rewind
+%{_bindir}/pg_verify_checksums
 %{_bindir}/postgres
 %{_bindir}/postgresql-setup
 %{_bindir}/postmaster
@@ -1066,6 +1080,7 @@ make -C postgresql-setup-%{setup_version} check
 %{_mandir}/man1/pg_receivewal.*
 %{_mandir}/man1/pg_resetwal.*
 %{_mandir}/man1/pg_rewind.*
+%{_mandir}/man1/pg_verify_checksums.*
 %{_mandir}/man1/postgres.*
 %{_mandir}/man1/postgresql-new-systemd-unit.*
 %{_mandir}/man1/postgresql-setup.*
@@ -1085,6 +1100,8 @@ make -C postgresql-setup-%{setup_version} check
 
 %files server-devel -f devel.lst
 %{_bindir}/pg_server_config
+%dir %{_datadir}/pgsql
+%{_datadir}/pgsql/errcodes.txt
 %dir %{_includedir}/pgsql
 %{_includedir}/pgsql/server
 %{_libdir}/pgsql/pgxs/
@@ -1158,6 +1175,10 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Tue Oct 16 2018 Pavel Raiskup <praiskup@redhat.com> - 11.0-1
+- new upstream release, per release notes:
+  https://www.postgresql.org/docs/11/static/release-11-0.html
+
 * Wed Sep 05 2018 Pavel Raiskup <praiskup@redhat.com> - 10.5-4
 - build without postgresql-libs; libraries moved to libpq and libecpg
 
