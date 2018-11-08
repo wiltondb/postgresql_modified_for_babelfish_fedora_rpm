@@ -58,8 +58,8 @@
 Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 11
-Version: 11.0
-Release: 2%{?dist}
+Version: 11.1
+Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -71,7 +71,7 @@ Url: http://www.postgresql.org/
 # in-place upgrade of an old database.  In most cases it will not be critical
 # that this be kept up with the latest minor release of the previous series;
 # but update when bugs affecting pg_dump output are fixed.
-%global prevversion 10.5
+%global prevversion 10.6
 %global prevmajorversion 10
 %global prev_prefix %{_libdir}/pgsql/postgresql-%{prevmajorversion}
 %global precise_version %{?epoch:%epoch:}%version-%release
@@ -1211,12 +1211,16 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Wed Nov 07 2018 Patrik Novotný <panovotn@redhat.com> - 11.1-1
+- Rebase to upstream release 11.1
+  https://www.postgresql.org/docs/11/release-11-1.html
+
 * Fri Oct 26 2018 Pavel Raiskup <praiskup@redhat.com> - 11.0-2
 - build also contrib *plpython3 modules
 
 * Tue Oct 16 2018 Pavel Raiskup <praiskup@redhat.com> - 11.0-1
 - new upstream release, per release notes:
-  https://www.postgresql.org/docs/11/static/release-11-0.html
+  https://www.postgresql.org/docs/11/static/release-11.html
 
 * Wed Sep 05 2018 Pavel Raiskup <praiskup@redhat.com> - 10.5-4
 - build without postgresql-libs; libraries moved to libpq and libecpg
