@@ -64,7 +64,6 @@ Release: 2%{?dist}
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
 License: PostgreSQL
-Group: Applications/Databases
 Url: http://www.postgresql.org/
 
 # This SRPM includes a copy of the previous major release, which is needed for
@@ -185,7 +184,6 @@ postgresql-server sub-package.
 
 %package server
 Summary: The programs needed to create and run a PostgreSQL server
-Group: Applications/Databases
 Requires: %{name}%{?_isa} = %precise_version
 Requires(pre): /usr/sbin/useradd
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
@@ -209,7 +207,6 @@ and maintain PostgreSQL databases.
 
 %package docs
 Summary: Extra documentation for PostgreSQL
-Group: Applications/Databases
 Requires: %{name}%{?_isa} = %precise_version
 # Just for more intuitive documentation installation
 Provides: %{name}-doc = %precise_version
@@ -222,7 +219,6 @@ and source files for the PostgreSQL tutorial.
 
 %package contrib
 Summary: Extension modules distributed with PostgreSQL
-Group: Applications/Databases
 Requires: %{name}%{?_isa} = %precise_version
 
 %description contrib
@@ -232,7 +228,6 @@ included in the PostgreSQL distribution.
 
 %package server-devel
 Summary: PostgreSQL development header files and libraries
-Group: Development/Libraries
 
 %description server-devel
 The postgresql-server-devel package contains the header files and configuration
@@ -259,7 +254,6 @@ counterparts.
 %if %upgrade
 %package upgrade
 Summary: Support for upgrading from the previous major release of PostgreSQL
-Group: Applications/Databases
 Requires: %{name}-server%{?_isa} = %precise_version
 Provides: bundled(postgresql-server) = %prevversion
 
@@ -271,7 +265,6 @@ version of PostgreSQL.
 
 %package upgrade-devel
 Summary: Support for build of extensions required for upgrade process
-Group: Development/Libraries
 Requires: %{name}-upgrade%{?_isa} = %precise_version
 
 %description upgrade-devel
@@ -284,7 +277,6 @@ process.
 %if %plperl
 %package plperl
 Summary: The Perl procedural language for PostgreSQL
-Group: Applications/Databases
 Requires: %{name}-server%{?_isa} = %precise_version
 Requires: perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 %if %runselftest
@@ -301,7 +293,6 @@ Install this if you want to write database functions in Perl.
 %if %plpython
 %package plpython
 Summary: The Python2 procedural language for PostgreSQL
-Group: Applications/Databases
 Requires: %{name}-server%{?_isa} = %precise_version
 Provides: %{name}-plpython2 = %precise_version
 
@@ -315,7 +306,6 @@ Install this if you want to write database functions in Python 2.
 %if %plpython3
 %package plpython3
 Summary: The Python3 procedural language for PostgreSQL
-Group: Applications/Databases
 Requires: %{name}-server%{?_isa} = %precise_version
 
 %description plpython3
@@ -328,7 +318,6 @@ Install this if you want to write database functions in Python 3.
 %if %pltcl
 %package pltcl
 Summary: The Tcl procedural language for PostgreSQL
-Group: Applications/Databases
 Requires: %{name}-server%{?_isa} = %precise_version
 
 %description pltcl
@@ -341,7 +330,6 @@ Install this if you want to write database functions in Tcl.
 %if %test
 %package test
 Summary: The test suite distributed with PostgreSQL
-Group: Applications/Databases
 Requires: %{name}-server%{?_isa} = %precise_version
 Requires: %{name}-server-devel%{?_isa} = %precise_version
 
