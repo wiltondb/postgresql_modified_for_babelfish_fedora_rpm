@@ -855,10 +855,6 @@ find_lang_bins pltcl.lst pltcl
 make -C postgresql-setup-%{setup_version} check
 %endif
 
-
-%clean
-
-
 # FILES sections.
 %files -f main.lst
 %doc doc/KNOWN_BUGS doc/MISSING_FEATURES doc/TODO
