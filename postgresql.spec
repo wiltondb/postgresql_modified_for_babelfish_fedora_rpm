@@ -38,6 +38,7 @@
 %{!?pltcl:%global pltcl 1}
 %{!?plperl:%global plperl 1}
 %{!?ssl:%global ssl 1}
+%{!?icu:%global icu 1}
 %{!?kerberos:%global kerberos 1}
 %{!?ldap:%global ldap 1}
 %{!?nls:%global nls 1}
@@ -59,7 +60,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 11
 Version: 11.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -169,6 +170,10 @@ BuildRequires: systemtap-sdt-devel
 BuildRequires: libselinux-devel
 %endif
 
+%if %icu
+BuildRequires:	libicu-devel
+%endif
+
 # https://bugzilla.redhat.com/1464368
 %global __provides_exclude_from %{_libdir}/pgsql
 
@@ -228,6 +233,9 @@ included in the PostgreSQL distribution.
 
 %package server-devel
 Summary: PostgreSQL development header files and libraries
+%if %icu
+Requires:	libicu-devel
+%endif
 
 %description server-devel
 The postgresql-server-devel package contains the header files and configuration
@@ -455,6 +463,9 @@ common_configure_options='
 	--with-system-tzdata=%_datadir/zoneinfo
 	--datadir=%_datadir/pgsql
 	--with-systemd
+%if %icu
+	--with-icu
+%endif
 '
 
 %if %plpython3
@@ -599,6 +610,9 @@ upgrade_configure ()
 %if %beta
 		--enable-debug \
 		--enable-cassert \
+%endif
+%if %icu
+		--with-icu \
 %endif
 %if %plperl
 		--with-perl \
@@ -1195,6 +1209,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Tue Jan 22 2019 Pavel Raiskup <praiskup@redhat.com> - 11.1-3
+- build with ICU support, to provide more opt-in collations
+
 * Mon Jan 14 2019 Björn Esser <besser82@fedoraproject.org> - 11.1-2
 - Rebuilt for libcrypt.so.2 (#1666033)
 
