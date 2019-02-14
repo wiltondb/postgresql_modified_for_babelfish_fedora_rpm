@@ -60,7 +60,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 11
 Version: 11.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -117,7 +117,7 @@ BuildRequires: perl-generators
 BuildRequires: readline-devel zlib-devel
 BuildRequires: systemd systemd-devel util-linux
 BuildRequires: multilib-rpm-config
-BuildRequires: libpq-devel
+BuildRequires: libpq-devel >= %version
 
 # postgresql-setup build requires
 BuildRequires: m4 elinks docbook-utils help2man
@@ -1209,6 +1209,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Thu Feb 14 2019 Pavel Raiskup <praiskup@redhat.com> - 11.1-5
+- protect against building server against older libpq library
+
 * Sat Feb 02 2019 Fedora Release Engineering <releng@fedoraproject.org> - 11.1-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
