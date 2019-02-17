@@ -60,7 +60,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 11
 Version: 11.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1209,6 +1209,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Sun Feb 17 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 11.2-2
+- Rebuild for readline 8.0
+
 * Thu Feb 14 2019 Patrik Novotný <panovotn@redhat.com> - 11.2-1
 - Rebase to upstream release 11.2
 
