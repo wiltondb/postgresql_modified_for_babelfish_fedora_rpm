@@ -244,6 +244,7 @@ needed to compile PostgreSQL server extension.
 %package test-rpm-macros
 Summary: Convenience RPM macros for build-time testing against PostgreSQL server
 Requires: %{name}-server = %precise_version
+BuildArch: noarch
 
 %description test-rpm-macros
 This package is meant to be added as BuildRequires: dependency of other packages
