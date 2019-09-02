@@ -305,7 +305,7 @@ Summary: The Python2 procedural language for PostgreSQL
 Requires: %{name}-server%{?_isa} = %precise_version
 Provides: %{name}-plpython = %precise_version
 
-%description plpython
+%description plpython2
 The postgresql-plpython package contains the PL/Python procedural language,
 which is an extension to the PostgreSQL database server.
 Install this if you want to write database functions in Python 2.
@@ -1189,7 +1189,7 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %if %plpython
-%files plpython -f plpython.lst
+%files plpython2 -f plpython.lst
 %{_datadir}/pgsql/extension/plpython2*
 %{_datadir}/pgsql/extension/plpythonu*
 %{_libdir}/pgsql/plpython2.so
