@@ -1099,6 +1099,7 @@ make -C postgresql-setup-%{setup_version} check
 %{_datadir}/pgsql/tsearch_data/
 %dir %{_datadir}/postgresql-setup
 %{_datadir}/postgresql-setup/library.sh
+%dir %{_libdir}/pgsql
 %{_libdir}/pgsql/*_and_*.so
 %{_libdir}/pgsql/dict_snowball.so
 %{_libdir}/pgsql/euc2004_sjis2004.so
