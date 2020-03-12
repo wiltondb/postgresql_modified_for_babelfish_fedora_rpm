@@ -61,7 +61,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 12
 Version: %{majorversion}.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -113,6 +113,7 @@ Patch9: postgresql-server-pg_config.patch
 BuildRequires: gcc
 BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk
 BuildRequires: perl(ExtUtils::Embed), perl-devel
+BuildRequires: perl(Opcode)
 %if 0%{?fedora} || 0%{?rhel} > 7
 BuildRequires: perl-generators
 %endif
@@ -240,6 +241,9 @@ Requires:	libicu-devel
 %endif
 %if %kerberos
 Requires: krb5-devel
+%endif
+%if %llvmjit
+Requires: clang-devel llvm-devel
 %endif
 
 %description server-devel
@@ -1254,6 +1258,10 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Thu Mar 12 2020 Patrik Novotný <panovotn@redhat.com> - 12.2-2
+- Fix requirements for JIT in postgresql-server-devel
+- Fix build issues regarding new perl update
+
 * Fri Feb 14 2020 Patrik Novotný <panovotn@redhat.com> - 12.2-1
 - Rebase to upstream release 12.2
 
