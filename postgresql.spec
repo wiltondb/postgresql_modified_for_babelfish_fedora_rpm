@@ -61,7 +61,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 12
 Version: %{majorversion}.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1258,6 +1258,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Fri May 15 2020 Pete Walter <pwalter@fedoraproject.org> - 12.2-3
+- Rebuild for ICU 67
+
 * Thu Mar 12 2020 Patrik Novotný <panovotn@redhat.com> - 12.2-2
 - Fix requirements for JIT in postgresql-server-devel
 - Fix build issues regarding new perl update
