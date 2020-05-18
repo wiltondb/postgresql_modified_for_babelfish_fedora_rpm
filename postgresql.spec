@@ -60,8 +60,8 @@
 Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 12
-Version: %{majorversion}.2
-Release: 3%{?dist}
+Version: %{majorversion}.3
+Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -72,8 +72,8 @@ Url: http://www.postgresql.org/
 # in-place upgrade of an old database.  In most cases it will not be critical
 # that this be kept up with the latest minor release of the previous series;
 # but update when bugs affecting pg_dump output are fixed.
-%global prevversion 11.7
 %global prevmajorversion 11
+%global prevversion %{prevmajorversion}.8
 %global prev_prefix %{_libdir}/pgsql/postgresql-%{prevmajorversion}
 %global precise_version %{?epoch:%epoch:}%version-%release
 
@@ -1258,6 +1258,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Mon May 18 2020 Patrik Novotný <panovotn@redhat.com> - 12.3-1
+- Rebase to upstream release 12.3
+
 * Fri May 15 2020 Pete Walter <pwalter@fedoraproject.org> - 12.2-3
 - Rebuild for ICU 67
 
