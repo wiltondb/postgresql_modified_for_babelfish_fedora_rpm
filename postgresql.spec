@@ -106,7 +106,6 @@ Source17: https://ftp.postgresql.org/pub/source/v%{prevversion}/postgresql-%{pre
 Patch1: rpm-pgsql.patch
 Patch2: postgresql-logging.patch
 Patch5: postgresql-var-run-socket.patch
-Patch6: postgresql-man.patch
 Patch8: postgresql-external-libpq.patch
 Patch9: postgresql-server-pg_config.patch
 
@@ -394,7 +393,6 @@ goal of accelerating analytics queries.
 %patch1 -p1
 %patch2 -p1
 %patch5 -p1
-%patch6 -p1
 %patch8 -p1
 %patch9 -p1
 
@@ -1258,6 +1256,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Tue May 19 2020 Patrik Novotný <panovotn@redhat.com> - 12.3-2
+- Drop postgresql-man.patch
+
 * Mon May 18 2020 Patrik Novotný <panovotn@redhat.com> - 12.3-1
 - Rebase to upstream release 12.3
 
