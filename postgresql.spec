@@ -533,7 +533,8 @@ cp src/Makefile.global src/Makefile.global.python3
 
 make distclean
 
-%endif # %%plpython3
+# endif plpython3
+%endif
 
 PYTHON=/usr/bin/python2
 
@@ -683,7 +684,8 @@ upgrade_configure ()
 	make %{?_smp_mflags} all
 	make -C contrib %{?_smp_mflags} all
 	popd
-%endif # %%upgrade
+# endif upgrade
+%endif
 
 
 %install
