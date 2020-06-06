@@ -61,7 +61,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 12
 Version: %{majorversion}.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -120,6 +120,7 @@ BuildRequires: readline-devel zlib-devel
 BuildRequires: systemd systemd-devel util-linux
 BuildRequires: multilib-rpm-config
 BuildRequires: libpq-devel >= %version
+BuildRequires: docbook-style-xsl
 
 # postgresql-setup build requires
 BuildRequires: m4 elinks docbook-utils help2man
@@ -1258,6 +1259,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Sat Jun 06 2020 Pavel Raiskup <praiskup@redhat.com> - 12.3-3
+- add docbook-style-xsl to BuildRequires
+
 * Tue May 26 2020 Miro Hrončok <mhroncok@redhat.com> - 12.3-2
 - Rebuilt for Python 3.9
 
