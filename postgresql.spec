@@ -61,7 +61,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 12
 Version: %{majorversion}.4
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1116,6 +1116,7 @@ make -C postgresql-setup-%{setup_version} check
 %{_bindir}/pg_checksums
 %{_bindir}/postgres
 %{_bindir}/postgresql-setup
+%{_bindir}/postgresql-upgrade
 %{_bindir}/postmaster
 %dir %{_datadir}/pgsql
 %{_datadir}/pgsql/*.sample
@@ -1158,6 +1159,7 @@ make -C postgresql-setup-%{setup_version} check
 %{_mandir}/man1/postgres.*
 %{_mandir}/man1/postgresql-new-systemd-unit.*
 %{_mandir}/man1/postgresql-setup.*
+%{_mandir}/man1/postgresql-upgrade.*
 %{_mandir}/man1/postmaster.*
 %{_sbindir}/postgresql-new-systemd-unit
 %{_tmpfilesdir}/postgresql.conf
@@ -1258,6 +1260,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Mon Nov 16 2020 Honza Horak <hhorak@redhat.com> - 12.4-4
+- Update postgresql-setup to v8.5
+
 * Fri Oct 09 2020 Honza Horak <hhorak@redhat.com> - 12.4-3
 - Removing problematic requirements on ppc64 arch
   Resolves: #1882642
