@@ -59,8 +59,8 @@
 
 Summary: PostgreSQL client programs
 Name: postgresql
-%global majorversion 12
-Version: %{majorversion}.5
+%global majorversion 13
+Version: %{majorversion}.1
 Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
@@ -72,8 +72,8 @@ Url: http://www.postgresql.org/
 # in-place upgrade of an old database.  In most cases it will not be critical
 # that this be kept up with the latest minor release of the previous series;
 # but update when bugs affecting pg_dump output are fixed.
-%global prevmajorversion 11
-%global prevversion %{prevmajorversion}.10
+%global prevmajorversion 12
+%global prevversion %{prevmajorversion}.5
 %global prev_prefix %{_libdir}/pgsql/postgresql-%{prevmajorversion}
 %global precise_version %{?epoch:%epoch:}%version-%release
 
@@ -300,6 +300,7 @@ Summary: The Perl procedural language for PostgreSQL
 Requires: %{name}-server%{?_isa} = %precise_version
 Requires: perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 %if %runselftest
+BuildRequires: perl(Opcode)
 BuildRequires: perl(Data::Dumper)
 %endif
 
@@ -867,7 +868,7 @@ find_lang_bins ()
 find_lang_bins devel.lst pg_server_config
 find_lang_bins server.lst \
 	initdb pg_basebackup pg_controldata pg_ctl pg_resetwal pg_rewind plpgsql \
-	postgres pg_checksums
+	postgres pg_checksums pg_verifybackup
 find_lang_bins contrib.lst \
 	pg_archivecleanup pg_test_fsync pg_test_timing pg_waldump
 find_lang_bins main.lst \
@@ -1117,6 +1118,7 @@ make -C postgresql-setup-%{setup_version} check
 %{_bindir}/pg_resetwal
 %{_bindir}/pg_rewind
 %{_bindir}/pg_checksums
+%{_bindir}/pg_verifybackup
 %{_bindir}/postgres
 %{_bindir}/postgresql-setup
 %{_bindir}/postgresql-upgrade
@@ -1128,8 +1130,6 @@ make -C postgresql-setup-%{setup_version} check
 %{_datadir}/pgsql/extension/plpgsql*
 %{_datadir}/pgsql/information_schema.sql
 %{_datadir}/pgsql/postgres.bki
-%{_datadir}/pgsql/postgres.description
-%{_datadir}/pgsql/postgres.shdescription
 %{_datadir}/pgsql/snowball_create.sql
 %{_datadir}/pgsql/sql_features.txt
 %{_datadir}/pgsql/system_views.sql
@@ -1159,6 +1159,7 @@ make -C postgresql-setup-%{setup_version} check
 %{_mandir}/man1/pg_resetwal.*
 %{_mandir}/man1/pg_rewind.*
 %{_mandir}/man1/pg_checksums.*
+%{_mandir}/man1/pg_verifybackup.*
 %{_mandir}/man1/postgres.*
 %{_mandir}/man1/postgresql-new-systemd-unit.*
 %{_mandir}/man1/postgresql-setup.*
@@ -1229,7 +1230,9 @@ make -C postgresql-setup-%{setup_version} check
 
 %if %plperl
 %files plperl -f plperl.lst
+%{_datadir}/pgsql/extension/bool_plperl*
 %{_datadir}/pgsql/extension/plperl*
+%{_libdir}/pgsql/bool_plperl.so
 %{_libdir}/pgsql/plperl.so
 %endif
 
@@ -1263,6 +1266,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Wed Nov 18 2020 Honza Horak <hhorak@redhat.com> - 13.1-1
+- Rebase to usptream release 13.1
+
 * Wed Jan 13 2021 Patrik Novotný <panovotn@redhat.com> - 12.5-1
 - Rebase to upstream release 12.5
   Patch for libpq 13.x build time compatibility
