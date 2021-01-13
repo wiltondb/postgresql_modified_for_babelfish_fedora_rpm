@@ -60,8 +60,8 @@
 Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 12
-Version: %{majorversion}.4
-Release: 5%{?dist}
+Version: %{majorversion}.5
+Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -73,7 +73,7 @@ Url: http://www.postgresql.org/
 # that this be kept up with the latest minor release of the previous series;
 # but update when bugs affecting pg_dump output are fixed.
 %global prevmajorversion 11
-%global prevversion %{prevmajorversion}.9
+%global prevversion %{prevmajorversion}.10
 %global prev_prefix %{_libdir}/pgsql/postgresql-%{prevmajorversion}
 %global precise_version %{?epoch:%epoch:}%version-%release
 
@@ -108,6 +108,7 @@ Patch2: postgresql-logging.patch
 Patch5: postgresql-var-run-socket.patch
 Patch8: postgresql-external-libpq.patch
 Patch9: postgresql-server-pg_config.patch
+Patch10: postgresql-12.5-contrib-dblink-expected-out.patch
 
 BuildRequires: make
 BuildRequires: gcc
@@ -392,6 +393,7 @@ goal of accelerating analytics queries.
 %patch5 -p1
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
 
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
@@ -1261,6 +1263,13 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Wed Jan 13 2021 Patrik Novotný <panovotn@redhat.com> - 12.5-1
+- Rebase to upstream release 12.5
+  Patch for libpq 13.x build time compatibility
+  Fixes CVE-2020-25694
+  Fixes CVE-2020-25695
+  Fixes CVE-2020-25696
+
 * Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 12.4-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
