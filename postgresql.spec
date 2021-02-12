@@ -61,7 +61,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 13
 Version: %{majorversion}.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -440,10 +440,6 @@ cd ..
 # Fiddling with CFLAGS.
 
 CFLAGS="${CFLAGS:-%optflags}"
-%ifarch %{power64}
-# See the bug #1051075, ppc64 should benefit from -O3
-CFLAGS=`echo $CFLAGS | xargs -n 1 | sed 's|-O2|-O3|g' | xargs -n 100`
-%endif
 # Strip out -ffast-math from CFLAGS....
 CFLAGS=`echo $CFLAGS|xargs -n 1|grep -v ffast-math|xargs -n 100`
 export CFLAGS
@@ -1264,6 +1260,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Fri Feb 12 2021 Michal Schorm <mschorm@redhat.com> - 13.1-2
+- Remove ancient PPC64 hack
+
 * Wed Nov 18 2020 Honza Horak <hhorak@redhat.com> - 13.1-1
 - Rebase to usptream release 13.1
 
