@@ -60,8 +60,8 @@
 Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 13
-Version: %{majorversion}.1
-Release: 2%{?dist}
+Version: %{majorversion}.2
+Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -73,7 +73,7 @@ Url: http://www.postgresql.org/
 # that this be kept up with the latest minor release of the previous series;
 # but update when bugs affecting pg_dump output are fixed.
 %global prevmajorversion 12
-%global prevversion %{prevmajorversion}.5
+%global prevversion %{prevmajorversion}.6
 %global prev_prefix %{_libdir}/pgsql/postgresql-%{prevmajorversion}
 %global precise_version %{?epoch:%epoch:}%version-%release
 
@@ -1260,10 +1260,13 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Tue Feb 16 2021 Honza Horak <hhorak@redhat.com> - 13.2-1
+- Update to 13.2
+
 * Fri Feb 12 2021 Michal Schorm <mschorm@redhat.com> - 13.1-2
 - Remove ancient PPC64 hack
 
-* Wed Nov 18 2020 Honza Horak <hhorak@redhat.com> - 13.1-1
+* Wed Jan 13 2021 Honza Horak <hhorak@redhat.com> - 13.1-1
 - Rebase to usptream release 13.1
 
 * Wed Jan 13 2021 Patrik Novotný <panovotn@redhat.com> - 12.5-1
