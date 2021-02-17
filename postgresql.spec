@@ -34,11 +34,6 @@
 %{!?test:%global test 1}
 %{!?llvmjit:%global llvmjit 1}
 %{!?upgrade:%global upgrade 1}
-%if 0%{?rhel} > 8
-%{!?plpython:%global plpython 0}
-%else
-%{!?plpython:%global plpython 1}
-%endif
 %{!?plpython3:%global plpython3 1}
 %{!?pltcl:%global pltcl 1}
 %{!?plperl:%global plperl 1}
@@ -65,7 +60,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 13
 Version: %{majorversion}.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -129,10 +124,6 @@ BuildRequires: docbook-style-xsl
 
 # postgresql-setup build requires
 BuildRequires: m4 elinks docbook-utils help2man
-
-%if %plpython
-BuildRequires: python2-devel
-%endif
 
 %if %plpython3
 BuildRequires: python3-devel
@@ -314,19 +305,6 @@ Install this if you want to write database functions in Perl.
 %endif
 
 
-%if %plpython
-%package plpython
-Summary: The Python2 procedural language for PostgreSQL
-Requires: %{name}-server%{?_isa} = %precise_version
-Provides: %{name}-plpython2 = %precise_version
-
-%description plpython
-The postgresql-plpython package contains the PL/Python procedural language,
-which is an extension to the PostgreSQL database server.
-Install this if you want to write database functions in Python 2.
-%endif
-
-
 %if %plpython3
 %package plpython3
 Summary: The Python3 procedural language for PostgreSQL
@@ -448,11 +426,6 @@ CFLAGS="${CFLAGS:-%optflags}"
 CFLAGS=`echo $CFLAGS|xargs -n 1|grep -v ffast-math|xargs -n 100`
 export CFLAGS
 
-# plpython requires separate configure/build runs to build against python 2
-# versus python 3.  Our strategy is to do the python 3 run first, then make
-# distclean and do it again for the "normal" build.  Note that the installed
-# Makefile.global will reflect the python 2 build, which seems appropriate
-# since that's still considered the default plpython version.
 common_configure_options='
 	--disable-rpath
 %if %beta
@@ -503,50 +476,15 @@ common_configure_options='
 %if %llvmjit
 	--with-llvm
 %endif
-'
-
 %if %plpython3
+	--with-python
+%endif
+'
 
 export PYTHON=/usr/bin/python3
 
 # These configure options must match main build
-%configure $common_configure_options \
-	--with-python
-
-# Fortunately we don't need to build much except plpython itself.
-%global python_subdirs       \\\
-	src/pl/plpython          \\\
-	contrib/hstore_plpython  \\\
-	contrib/jsonb_plpython   \\\
-	contrib/ltree_plpython
-
-for dir in %python_subdirs; do
-	%make_build -C "$dir" all
-done
-
-# save built form in a directory that "make distclean" won't touch
-for dir in %python_subdirs; do
-	rm -rf "${dir}3" # shouldn't exist, unless --short-circuit
-	cp -a "$dir" "${dir}3"
-done
-
-# must also save this version of Makefile.global for later
-cp src/Makefile.global src/Makefile.global.python3
-
-make distclean
-
-# endif plpython3
-%endif
-
-PYTHON=/usr/bin/python2
-
-# Normal (python2) build begins here
-%configure $common_configure_options \
-%if %plpython
-	--with-python
-%endif
-
-unset PYTHON
+%configure $common_configure_options
 
 %make_build world
 
@@ -583,32 +521,6 @@ test_failure=0
 	run_testsuite "src/test/regress"
 	make clean -C "src/test/regress"
 	run_testsuite "src/pl"
-%if %plpython3
-	# must install Makefile.global that selects python3
-	mv src/Makefile.global src/Makefile.global.save
-	cp src/Makefile.global.python3 src/Makefile.global
-	touch -r src/Makefile.global.save src/Makefile.global
-
-	for dir in %python_subdirs; do
-		# because "make check" does "make install" on the whole tree,
-		# we must temporarily install *plpython3 dir as *plpython,
-		# since that is the subdirectory src/pl/Makefile knows about
-		mv "$dir" "${dir}2"
-		mv "${dir}3" "$dir"
-	done
-
-	for dir in %python_subdirs; do
-		run_testsuite "$dir"
-	done
-
-	for dir in %python_subdirs; do
-		# and clean up our mess
-		mv "$dir" "${dir}3"
-		mv "${dir}2" "${dir}"
-	done
-
-	mv -f src/Makefile.global.save src/Makefile.global
-%endif
 	run_testsuite "contrib"
 %endif
 
@@ -639,7 +551,6 @@ upgrade_configure ()
 	# its ideas about installation paths.
 
 	# The -fno-aggressive-loop-optimizations is hack for #993532
-	PYTHON="${PYTHON-/usr/bin/python2}" \
 	CFLAGS="$CFLAGS -fno-aggressive-loop-optimizations" ./configure \
 		--build=%{_build} \
 		--host=%{_host} \
@@ -658,30 +569,15 @@ upgrade_configure ()
 %if %pltcl
 		--with-tcl \
 %endif
+%if %plpython3
+		--with-python \
+%endif
 		--with-tclconfig=%_libdir \
 		--with-system-tzdata=/usr/share/zoneinfo \
 		"$@"
 }
 
-%if %plpython3
-	export PYTHON=/usr/bin/python3
-	upgrade_configure --with-python
-	for dir in %python_subdirs; do
-		# Previous version doesn't necessarily have this.
-		test -d "$dir" || continue
-		%make_build -C "$dir" all
-
-		# save aside the only one file which we are interested here
-		cp "$dir"/*plpython3.so ./
-	done
-	unset PYTHON
-	make distclean
-%endif
-
 	upgrade_configure \
-%if %plpython
-		--with-python
-%endif
 
 	make %{?_smp_mflags} all
 	make -C contrib %{?_smp_mflags} all
@@ -717,16 +613,6 @@ rm $RPM_BUILD_ROOT/%_includedir/pg_config*.h
 rm $RPM_BUILD_ROOT/%_includedir/libpq/libpq-fs.h
 rm $RPM_BUILD_ROOT/%_includedir/postgres_ext.h
 rm -r $RPM_BUILD_ROOT/%_includedir/pgsql/internal/
-
-%if %plpython3
-	mv src/Makefile.global src/Makefile.global.save
-	cp src/Makefile.global.python3 src/Makefile.global
-	touch -r src/Makefile.global.save src/Makefile.global
-	for dir in %python_subdirs; do
-		%make_install -C "${dir}3"
-	done
-	mv -f src/Makefile.global.save src/Makefile.global
-%endif
 
 # make sure these directories exist even if we suppressed all contrib modules
 install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/pgsql/contrib
@@ -770,12 +656,6 @@ rm $RPM_BUILD_ROOT/%{_datadir}/man/man1/ecpg.1
 	pushd postgresql-%{prevversion}
 	make DESTDIR=$RPM_BUILD_ROOT install
 	make -C contrib DESTDIR=$RPM_BUILD_ROOT install
-%if %plpython3
-	for file in *plpython3.so; do
-		install -m 755 "$file" \
-			$RPM_BUILD_ROOT/%_libdir/pgsql/postgresql-%prevmajorversion/lib
-	done
-%endif
 	popd
 
 	# remove stuff we don't actually need for upgrade purposes
@@ -849,11 +729,9 @@ rm $RPM_BUILD_ROOT%{_libdir}/libpgfeutils.a
 rm -f $RPM_BUILD_ROOT%{_bindir}/pgsql/hstore_plperl.so
 %endif
 
-%if !%plpython
-rm -f $RPM_BUILD_ROOT%{_bindir}/pgsql/hstore_plpython2.so
+# no python2, yet installed, remove
 rm -f $RPM_BUILD_ROOT%{_datadir}/pgsql/extension/*_plpythonu*
 rm -f $RPM_BUILD_ROOT%{_datadir}/pgsql/extension/*_plpython2u*
-%endif
 
 %if %nls
 find_lang_bins ()
@@ -876,11 +754,7 @@ find_lang_bins main.lst \
 %if %plperl
 find_lang_bins plperl.lst plperl
 %endif
-%if %plpython
-find_lang_bins plpython.lst plpython
-%endif
 %if %plpython3
-# plpython3 shares message files with plpython
 find_lang_bins plpython3.lst plpython
 %endif
 %if %pltcl
@@ -987,10 +861,6 @@ make -C postgresql-setup-%{setup_version} check
 %if %{plperl}
 %{_datadir}/pgsql/extension/jsonb_plperl*
 %endif
-%if %{plpython}
-%{_datadir}/pgsql/extension/jsonb_plpythonu*
-%{_datadir}/pgsql/extension/jsonb_plpython2u*
-%endif
 %if %{plpython3}
 %{_datadir}/pgsql/extension/jsonb_plpython3u*
 %endif
@@ -1036,9 +906,6 @@ make -C postgresql-setup-%{setup_version} check
 %if %plperl
 %{_libdir}/pgsql/hstore_plperl.so
 %endif
-%if %plpython
-%{_libdir}/pgsql/hstore_plpython2.so
-%endif
 %if %plpython3
 %{_libdir}/pgsql/hstore_plpython3.so
 %endif
@@ -1047,17 +914,11 @@ make -C postgresql-setup-%{setup_version} check
 %if %plperl
 %{_libdir}/pgsql/jsonb_plperl.so
 %endif
-%if %plpython
-%{_libdir}/pgsql/jsonb_plpython2.so
-%endif
 %if %plpython3
 %{_libdir}/pgsql/jsonb_plpython3.so
 %endif
 %{_libdir}/pgsql/lo.so
 %{_libdir}/pgsql/ltree.so
-%if %plpython
-%{_libdir}/pgsql/ltree_plpython2.so
-%endif
 %if %plpython3
 %{_libdir}/pgsql/ltree_plpython3.so
 %endif
@@ -1244,14 +1105,6 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 
-%if %plpython
-%files plpython -f plpython.lst
-%{_datadir}/pgsql/extension/plpython2*
-%{_datadir}/pgsql/extension/plpythonu*
-%{_libdir}/pgsql/plpython2.so
-%endif
-
-
 %if %plpython3
 %files plpython3 -f plpython3.lst
 %{_datadir}/pgsql/extension/plpython3*
@@ -1266,6 +1119,10 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Wed Feb 17 2021 Honza Horak <hhorak@redhat.com> - 13.2-4
+- Remove plpython2 entirely, same as upstream did
+  Resolves: #1913681
+
 * Tue Mar 02 2021 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 13.2-3
 - Rebuilt for updated systemd-rpm-macros
   See https://pagure.io/fesco/issue/2583.
