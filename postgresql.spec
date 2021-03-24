@@ -32,7 +32,9 @@
 %{!?beta:%global beta 0}
 
 %{!?test:%global test 1}
-%{!?llvmjit:%global llvmjit 1}
+# Disable temporarily to be able to build the package
+# tracked in RHBZ#1940964
+%{!?llvmjit:%global llvmjit 0}
 %{!?upgrade:%global upgrade 1}
 %{!?plpython3:%global plpython3 1}
 %{!?pltcl:%global pltcl 1}
@@ -1122,6 +1124,8 @@ make -C postgresql-setup-%{setup_version} check
 * Wed Feb 17 2021 Honza Horak <hhorak@redhat.com> - 13.2-4
 - Remove plpython2 entirely, same as upstream did
   Resolves: #1913681
+- Disable llvmjit in order to build at all
+  Related: #1940964
 
 * Tue Mar 02 2021 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 13.2-3
 - Rebuilt for updated systemd-rpm-macros
