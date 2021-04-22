@@ -32,9 +32,7 @@
 %{!?beta:%global beta 0}
 
 %{!?test:%global test 1}
-# Disable temporarily to be able to build the package
-# tracked in RHBZ#1940964
-%{!?llvmjit:%global llvmjit 0}
+%{!?llvmjit:%global llvmjit 1}
 %{!?upgrade:%global upgrade 1}
 %{!?plpython3:%global plpython3 1}
 %{!?pltcl:%global pltcl 1}
@@ -62,7 +60,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 13
 Version: %{majorversion}.2
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -109,6 +107,9 @@ Patch2: postgresql-logging.patch
 Patch5: postgresql-var-run-socket.patch
 Patch8: postgresql-external-libpq.patch
 Patch9: postgresql-server-pg_config.patch
+# Upstream bug #16971: https://www.postgresql.org/message-id/16971-5d004d34742a3d35%40postgresql.org
+# rhbz#1940964
+Patch10: postgresql-datalayout-mismatch-on-s390.patch
 
 BuildRequires: make
 BuildRequires: gcc
@@ -377,6 +378,7 @@ goal of accelerating analytics queries.
 %patch5 -p1
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
 
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
@@ -1125,6 +1127,11 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Thu Apr 22 2021 Honza Horak <hhorak@redhat.com> - 13.2-6
+- Fix jit failure on s390x
+  Thanks to Tom Stellard
+  Related: #1940964
+
 * Tue Apr 20 2021 Honza Horak <hhorak@redhat.com> - 13.2-5
 - Add macro for llvmjit settings
 
