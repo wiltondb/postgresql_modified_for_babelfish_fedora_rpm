@@ -110,6 +110,7 @@ Patch9: postgresql-server-pg_config.patch
 # Upstream bug #16971: https://www.postgresql.org/message-id/16971-5d004d34742a3d35%40postgresql.org
 # rhbz#1940964
 Patch10: postgresql-datalayout-mismatch-on-s390.patch
+Patch11: postgresql-subtransaction-test.patch
 
 BuildRequires: make
 BuildRequires: gcc
@@ -379,6 +380,7 @@ goal of accelerating analytics queries.
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
+%patch11 -p1
 
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
@@ -1130,8 +1132,9 @@ make -C postgresql-setup-%{setup_version} check
 * Thu May 20 2021 Pete Walter <pwalter@fedoraproject.org> - 13.2-8
 - Rebuild for ICU 69
 
-* Wed May 19 2021 Pete Walter <pwalter@fedoraproject.org> - 13.2-7
-- Rebuild for ICU 69
+* Tue May 11 2021 Honza Horak <hhorak@redhat.com> - 13.2-7
+- Fix subtransaction test for Python 3.10
+  Resolves: #1959080
 
 * Thu Apr 22 2021 Honza Horak <hhorak@redhat.com> - 13.2-6
 - Fix jit failure on s390x
