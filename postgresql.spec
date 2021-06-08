@@ -1212,6 +1212,7 @@ make -C postgresql-setup-%{setup_version} check
 %changelog
 * Fri Jun 04 2021 Honza Horak <hhorak@redhat.com> - 13.3-3
 - Build with a private libpq
+  Resolves: #1905584
 
 * Fri Jun 04 2021 Python Maint <python-maint@redhat.com> - 13.3-2
 - Rebuilt for Python 3.10
@@ -1237,7 +1238,7 @@ make -C postgresql-setup-%{setup_version} check
 * Tue Apr 20 2021 Honza Horak <hhorak@redhat.com> - 13.2-5
 - Add macro for llvmjit settings
 
-* Wed Feb 17 2021 Honza Horak <hhorak@redhat.com> - 13.2-4
+* Wed Mar 17 2021 Honza Horak <hhorak@redhat.com> - 13.2-4
 - Remove plpython2 entirely, same as upstream did
   Resolves: #1913681
 - Disable llvmjit in order to build at all
