@@ -12,3 +12,10 @@ badfuncs:
 xml:
     ignore:
         - /usr/share/doc/postgresql-docs/html/*.html
+
+# Wacky guess on file type that we do not need to care
+# Message: MIME type on <file> was text/plain and became text/x-c
+types:
+    ignore:
+        - /usr/lib64/pgsql/postgresql-*/include/server/port/freebsd.h
+        - /usr/include/pgsql/server/port/freebsd.h
