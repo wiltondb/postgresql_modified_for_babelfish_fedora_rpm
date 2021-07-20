@@ -213,6 +213,8 @@ PostgreSQL server, install libpq package instead.
 Summary: PostgreSQL development header files for this build of PostgreSQL server
 Group: Development/Libraries
 Requires: %{name}-private-libs%{?_isa} = %precise_version
+# Conflict is desired here, a user must pick one or another
+Conflicts: libpq-devel
 
 %description private-devel
 The postgresql-private-devel package contains the header files and libraries
