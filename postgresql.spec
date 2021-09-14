@@ -61,7 +61,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 13
 Version: %{majorversion}.4
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1240,6 +1240,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Tue Sep 14 2021 Sahana Prasad <sahana@redhat.com> - 13.4-2
+- Rebuilt with OpenSSL 3.0.0
+
 * Thu Aug 12 2021 Filip Januš <fjanus@rehdat.com> - 13.4-1
 - Update to 13.4
 - Disable postgresql-subtransaction-test.patch
