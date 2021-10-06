@@ -1321,7 +1321,7 @@ make -C postgresql-setup-%{setup_version} check
   Fixes CVE-2020-25695
   Fixes CVE-2020-25696
 
-* Wed Jan 07 2021 Fedora Release Engineering <releng@fedoraproject.org> - 12.4-5
+* Wed Jan 06 2021 Fedora Release Engineering <releng@fedoraproject.org> - 12.4-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
 * Mon Nov 16 2020 Honza Horak <hhorak@redhat.com> - 12.4-4
