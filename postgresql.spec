@@ -61,7 +61,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 13
 Version: %{majorversion}.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -112,6 +112,10 @@ Patch9: postgresql-server-pg_config.patch
 # rhbz#1940964
 Patch10: postgresql-datalayout-mismatch-on-s390.patch
 Patch12: postgresql-no-libecpg.patch
+# Upstream patch - it's assumed removal of this patch with the next upstream release
+Patch13: postgresql-pgcrypto-openssl3-init.patch
+# This patch disables deprecated ciphers in the test suite
+Patch14: postgresql-pgcrypto-openssl3-tests.patch
 
 BuildRequires: make
 BuildRequires: gcc
@@ -426,7 +430,8 @@ goal of accelerating analytics queries.
 %endif
 %patch9 -p1
 %patch10 -p1
-
+%patch13 -p1
+%patch14 -p1
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
 
@@ -1240,6 +1245,10 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Wed Oct 06 2021 Filip Januš <fjanus@redhat.com> - 13.4-3
+- Add patch 13 - corrects initialization of ciphers
+- Add patch 14 - disable unsupported ciphers in test suite
+
 * Tue Sep 14 2021 Sahana Prasad <sahana@redhat.com> - 13.4-2
 - Rebuilt with OpenSSL 3.0.0
 
