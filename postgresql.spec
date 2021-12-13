@@ -60,8 +60,8 @@
 Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 13
-Version: %{majorversion}.4
-Release: 5%{?dist}
+Version: %{majorversion}.5
+Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -73,7 +73,7 @@ Url: http://www.postgresql.org/
 # that this be kept up with the latest minor release of the previous series;
 # but update when bugs affecting pg_dump output are fixed.
 %global prevmajorversion 12
-%global prevversion %{prevmajorversion}.8
+%global prevversion %{prevmajorversion}.9
 %global prev_prefix %{_libdir}/pgsql/postgresql-%{prevmajorversion}
 %global precise_version %{?epoch:%epoch:}%version-%release
 
@@ -112,8 +112,6 @@ Patch9: postgresql-server-pg_config.patch
 # rhbz#1940964
 Patch10: postgresql-datalayout-mismatch-on-s390.patch
 Patch12: postgresql-no-libecpg.patch
-# Upstream patch - it's assumed removal of this patch with the next upstream release
-Patch13: postgresql-pgcrypto-openssl3-init.patch
 # This patch disables deprecated ciphers in the test suite
 Patch14: postgresql-pgcrypto-openssl3-tests.patch
 
@@ -430,7 +428,6 @@ goal of accelerating analytics queries.
 %endif
 %patch9 -p1
 %patch10 -p1
-%patch13 -p1
 %patch14 -p1
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
@@ -1245,6 +1242,10 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Mon Dec 13 2021 Marek Kulik <mkulik@redhat.com> - 13.5-1
+- Update to 13.5
+  Remove patch postgresql-pgcrypto-openssl3-init.patch - already in upstream
+
 * Thu Nov 18 2021 Marek Kulik <mkulik@redhat.com> - 13.4-5
 - Update postgresql-setup to v8.6
 
