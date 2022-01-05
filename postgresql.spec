@@ -59,8 +59,8 @@
 
 Summary: PostgreSQL client programs
 Name: postgresql
-%global majorversion 13
-Version: %{majorversion}.5
+%global majorversion 14
+Version: %{majorversion}.1
 Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
@@ -72,12 +72,12 @@ Url: http://www.postgresql.org/
 # in-place upgrade of an old database.  In most cases it will not be critical
 # that this be kept up with the latest minor release of the previous series;
 # but update when bugs affecting pg_dump output are fixed.
-%global prevmajorversion 12
-%global prevversion %{prevmajorversion}.9
+%global prevmajorversion 13
+%global prevversion %{prevmajorversion}.5
 %global prev_prefix %{_libdir}/pgsql/postgresql-%{prevmajorversion}
 %global precise_version %{?epoch:%epoch:}%version-%release
 
-%global setup_version 8.6
+%global setup_version 8.7
 
 %global service_name postgresql.service
 
@@ -779,7 +779,6 @@ rm $RPM_BUILD_ROOT/%{_datadir}/man/man1/ecpg.1
 	# Drop libraries.
 	rm lib/lib{ecpg,ecpg_compat,pgtypes}.so*
 	rm share/*.bki
-	rm share/*description
 	rm share/*.sample
 	rm share/*.sql
 	rm share/*.txt
@@ -846,7 +845,7 @@ find_lang_bins server.lst \
 	initdb pg_basebackup pg_controldata pg_ctl pg_resetwal pg_rewind plpgsql \
 	postgres pg_checksums pg_verifybackup
 find_lang_bins contrib.lst \
-	pg_archivecleanup pg_test_fsync pg_test_timing pg_waldump
+	pg_amcheck pg_archivecleanup pg_test_fsync pg_test_timing pg_waldump
 find_lang_bins main.lst \
 	pg_dump pg_upgrade pgscripts psql \
 %if ! %external_libpq
@@ -940,8 +939,8 @@ make -C postgresql-setup-%{setup_version} check
 %files contrib -f contrib.lst
 %doc contrib/spi/*.example
 %{_bindir}/oid2name
+%{_bindir}/pg_amcheck
 %{_bindir}/pg_archivecleanup
-%{_bindir}/pg_standby
 %{_bindir}/pg_test_fsync
 %{_bindir}/pg_test_timing
 %{_bindir}/pg_waldump
@@ -975,11 +974,13 @@ make -C postgresql-setup-%{setup_version} check
 %{_datadir}/pgsql/extension/lo*
 %{_datadir}/pgsql/extension/ltree*
 %{_datadir}/pgsql/extension/moddatetime*
+%{_datadir}/pgsql/extension/old_snapshot*
 %{_datadir}/pgsql/extension/pageinspect*
 %{_datadir}/pgsql/extension/pg_buffercache*
 %{_datadir}/pgsql/extension/pg_freespacemap*
 %{_datadir}/pgsql/extension/pg_prewarm*
 %{_datadir}/pgsql/extension/pg_stat_statements*
+%{_datadir}/pgsql/extension/pg_surgery*
 %{_datadir}/pgsql/extension/pg_trgm*
 %{_datadir}/pgsql/extension/pg_visibility*
 %{_datadir}/pgsql/extension/pgcrypto*
@@ -1031,11 +1032,13 @@ make -C postgresql-setup-%{setup_version} check
 %{_libdir}/pgsql/ltree_plpython3.so
 %endif
 %{_libdir}/pgsql/moddatetime.so
+%{_libdir}/pgsql/old_snapshot.so
 %{_libdir}/pgsql/pageinspect.so
 %{_libdir}/pgsql/passwordcheck.so
 %{_libdir}/pgsql/pg_buffercache.so
 %{_libdir}/pgsql/pg_freespacemap.so
 %{_libdir}/pgsql/pg_stat_statements.so
+%{_libdir}/pgsql/pg_surgery.so
 %{_libdir}/pgsql/pg_trgm.so
 %{_libdir}/pgsql/pg_visibility.so
 %{_libdir}/pgsql/pgcrypto.so
@@ -1051,9 +1054,9 @@ make -C postgresql-setup-%{setup_version} check
 %{_libdir}/pgsql/tsm_system_time.so
 %{_libdir}/pgsql/unaccent.so
 %{_mandir}/man1/oid2name.*
+%{_mandir}/man1/pg_amcheck.*
 %{_mandir}/man1/pg_archivecleanup.*
 %{_mandir}/man1/pg_recvlogical.*
-%{_mandir}/man1/pg_standby.*
 %{_mandir}/man1/pg_test_fsync.*
 %{_mandir}/man1/pg_test_timing.*
 %{_mandir}/man1/pg_waldump.*
@@ -1101,6 +1104,8 @@ make -C postgresql-setup-%{setup_version} check
 %{_datadir}/pgsql/postgres.bki
 %{_datadir}/pgsql/snowball_create.sql
 %{_datadir}/pgsql/sql_features.txt
+%{_datadir}/pgsql/system_constraints.sql
+%{_datadir}/pgsql/system_functions.sql
 %{_datadir}/pgsql/system_views.sql
 %{_datadir}/pgsql/timezonesets/
 %{_datadir}/pgsql/tsearch_data/
@@ -1242,6 +1247,11 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Wed Jan 05 2022 Filip Januš <fjanus@redhat.com> - 14.1-1
+- Update to 14.1
+- Update postgresql-setup to v8.7
+- Resolves: https://fedoraproject.org/wiki/Changes/PostgreSQL_14
+
 * Mon Dec 13 2021 Marek Kulik <mkulik@redhat.com> - 13.5-1
 - Update to 13.5
   Remove patch postgresql-pgcrypto-openssl3-init.patch - already in upstream
