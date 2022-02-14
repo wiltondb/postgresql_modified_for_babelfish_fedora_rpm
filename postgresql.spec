@@ -60,8 +60,8 @@
 Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 14
-Version: %{majorversion}.1
-Release: 2%{?dist}
+Version: %{majorversion}.2
+Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -73,7 +73,7 @@ Url: http://www.postgresql.org/
 # that this be kept up with the latest minor release of the previous series;
 # but update when bugs affecting pg_dump output are fixed.
 %global prevmajorversion 13
-%global prevversion %{prevmajorversion}.5
+%global prevversion %{prevmajorversion}.6
 %global prev_prefix %{_libdir}/pgsql/postgresql-%{prevmajorversion}
 %global precise_version %{?epoch:%epoch:}%version-%release
 
@@ -1247,6 +1247,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Wed Feb 09 2022 Filip Janus <fjanus@redhat.com> - 14.2-1
+- Update to 14.2
+
 * Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 14.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
