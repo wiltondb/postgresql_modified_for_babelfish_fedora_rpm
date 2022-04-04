@@ -65,7 +65,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 14
 Version: %{majorversion}.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -238,6 +238,8 @@ Requires(pre): /usr/sbin/useradd
 Requires: systemd
 # Make sure it's there when scriptlets run, too
 %{?systemd_requires}
+# postgresql setup requires runuser from util-linux package
+BuildRequires: util-linux
 # Packages which provide postgresql plugins should build-require
 # postgresql-server-devel and require
 # postgresql-server(:MODULE_COMPAT_%%{postgresql_major}).
@@ -1251,6 +1253,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Mon Apr 04 2022 Filip Janus <fjanus@redhat.com> - 14.2-3
+- Add build requirement util-linux
+
 * Wed Feb 23 2022 Marek Kulik <mkulik@redhat.com> - 14.2-2
 - Disable package note generation due to extension build issue.
 
