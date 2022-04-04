@@ -1,9 +1,0 @@
-summary:
-    All tests suitable to run in a CI
-discover:
-    how: fmf
-    url: https://src.fedoraproject.org/tests/postgresql.git
-    ref: master
-    filter: tier:1
-execute:
-    how: tmt
