@@ -65,7 +65,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 14
 Version: %{majorversion}.3
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -124,6 +124,7 @@ Patch15: postgresql-SPI-s-handling-of-errors-during-transaction-comm.patch
 Patch16: postgresql-pl-perl-test-case.patch
 
 BuildRequires: make
+BuildRequires: lz4-devel
 BuildRequires: gcc
 BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk
 BuildRequires: perl(ExtUtils::Embed), perl-devel
@@ -546,6 +547,7 @@ common_configure_options='
 	--with-system-tzdata=%_datadir/zoneinfo
 	--datadir=%_datadir/pgsql
 	--with-systemd
+	--with-lz4
 %if %icu
 	--with-icu
 %endif
@@ -632,6 +634,7 @@ upgrade_configure ()
 		--host=%{_host} \
 		--prefix=%prev_prefix \
 		--disable-rpath \
+		--with-lz4 \
 %if %beta
 		--enable-debug \
 		--enable-cassert \
@@ -1259,6 +1262,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Thu Jul 07 2022 Filip Januš <fjanus@redhat.com> - 14.3-6
+- enable lz4
+
 * Mon Jun 13 2022 Python Maint <python-maint@redhat.com> - 14.3-5
 - Rebuilt for Python 3.11
 
