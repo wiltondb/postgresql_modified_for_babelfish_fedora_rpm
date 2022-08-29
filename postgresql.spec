@@ -65,7 +65,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 14
 Version: %{majorversion}.3
-Release: 8%{?dist}
+Release: 9%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -192,7 +192,8 @@ BuildRequires:	libicu-devel
 %endif
 
 # https://bugzilla.redhat.com/1464368
-%global __provides_exclude_from %{_libdir}/pgsql
+# and do not provide pkgconfig RPM provides (RHBZ#1980992) and #2121696
+%global __provides_exclude_from %{_libdir}/(pgsql|pkgconfig)
 
 %description
 PostgreSQL is an advanced Object-Relational database management system (DBMS).
@@ -1262,6 +1263,12 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Mon Aug 29 2022 Filip Janus <fjanus@redhat.com> - 14.3-9
+- Do not provide pkgconfig(libpq) to not trick packages that actually require
+  libpq-devel
+- Resolves: #1980992
+- Resolves: #2121696
+
 * Mon Aug 01 2022 Frantisek Zatloukal <fzatlouk@redhat.com> - 14.3-8
 - Rebuilt for ICU 71.1
 
