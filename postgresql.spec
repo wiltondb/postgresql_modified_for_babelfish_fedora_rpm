@@ -65,7 +65,7 @@ Summary: PostgreSQL client programs
 Name: postgresql
 %global majorversion 14
 Version: %{majorversion}.3
-Release: 9%{?dist}
+Release: 10%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -244,6 +244,8 @@ Requires(pre): /usr/sbin/useradd
 Requires: systemd
 # Make sure it's there when scriptlets run, too
 %{?systemd_requires}
+# We require this to be present for /usr/sbin/runuser when using --initdb (rhbz#2071437)
+Requires: util-linux
 # postgresql setup requires runuser from util-linux package
 BuildRequires: util-linux
 # Packages which provide postgresql plugins should build-require
@@ -1263,6 +1265,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Thu Sep 01 2022 Ondrej Sloup <osloup@redhat.com> - 14.3-10
+- Add dependency on util-linux to make runuser available (rhbz#2071437)
+
 * Mon Aug 29 2022 Filip Janus <fjanus@redhat.com> - 14.3-9
 - Do not provide pkgconfig(libpq) to not trick packages that actually require
   libpq-devel
