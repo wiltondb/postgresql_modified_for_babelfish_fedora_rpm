@@ -1,0 +1,38 @@
+From 2d1b5bcead60b2bdf24bee92b72ce2e4544929b4 Mon Sep 17 00:00:00 2001
+From: reshke kirill <reshke@double.cloud>
+Date: Thu, 30 Jun 2022 10:24:33 +0300
+Subject: [PATCH] Fix incorrect argument passing in encode.c
+
+There was several incoorect usages of get_hex functions
+in encode.c file, where char was passed in function
+which expects const char * argument type
+
+Signed-off-by: reshke kirill <reshke@double.cloud>
+---
+ src/backend/utils/adt/encode.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/backend/utils/adt/encode.c b/src/backend/utils/adt/encode.c
+index 920f6f440ae..a7212b39763 100644
+--- a/src/backend/utils/adt/encode.c
++++ b/src/backend/utils/adt/encode.c
+@@ -241,7 +241,7 @@ hex_decode_allow_odd_digits(const char *src, unsigned len, char *dst)
+ 	{
+ 		/* If input has odd number of hex digits, add a 0 to the front to make it even */
+ 		v1 = '\0';
+-		v2 = get_hex(*s++);
++		v2 = get_hex(s++);
+ 		*p++ = v1 | v2;
+ 	}
+ 	/* The rest of the input must have even number of digits*/
+@@ -252,8 +252,8 @@ hex_decode_allow_odd_digits(const char *src, unsigned len, char *dst)
+ 			s++;
+ 			continue;
+ 		}
+-		v1 = get_hex(*s++) << 4;
+-		v2 = get_hex(*s++);
++		v1 = get_hex(s++) << 4;
++		v2 = get_hex(s++);
+ 		*p++ = v1 | v2;
+ 	}
+
