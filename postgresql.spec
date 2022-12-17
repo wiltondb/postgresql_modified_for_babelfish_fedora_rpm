@@ -439,14 +439,14 @@ pushd %{_sourcedir}
 # source0
 if [ ! -s %{SOURCE0} ] ; then
 	rm %{SOURCE0}
-	wget %{source0_url}
+	wget -nv %{source0_url}
 fi
 echo "%{source0_sha512}  $(basename %{SOURCE0})" | sha512sum -c
 
 # source1
 if [ ! -s %{SOURCE1} ] ; then
 	rm %{SOURCE1}
-	wget %{source1_url}
+	wget -nv %{source1_url}
 	mv postgresql-%{version_postgres_pdf}-US.pdf postgresql-%{version_postgres}-US.pdf
 fi
 echo "%{source1_sha512}  $(basename %{SOURCE1})" | sha512sum -c
@@ -454,14 +454,14 @@ echo "%{source1_sha512}  $(basename %{SOURCE1})" | sha512sum -c
 # source3
 if [ ! -s %{SOURCE3} ] ; then
 	rm %{SOURCE3}
-	wget %{source3_url}
+	wget -nv %{source3_url}
 fi
 echo "%{source3_sha512}  $(basename %{SOURCE3})" | sha512sum -c
 
 # source12
 if [ ! -s %{SOURCE12} ] ; then
 	rm %{SOURCE12}
-	wget %{source12_url}
+	wget -nv %{source12_url}
 fi
 echo "%{source12_sha512}  $(basename %{SOURCE12})" | sha512sum -c
 
