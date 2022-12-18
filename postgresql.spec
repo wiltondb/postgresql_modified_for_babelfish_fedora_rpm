@@ -71,7 +71,7 @@ Epoch: 2
 %global version_babelfish BABEL_2_2_0
 %global version_babelfish_suffix __PG_%{majorversion}_%{minorversion}
 Version: %{version_postgres}.%{version_babelfish}
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1304,7 +1304,11 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
-* Sat Dec 17 2022 Alex Kasko <alex@staticlibs.net> - 14.5.BABEL_2_2_0
+* Sun Dec 18 2022 Alex Kasko <alex@staticlibs.net> - 14.5.BABEL_2_2_0-2
+- make sources download less verbose
+- disable llvmjit
+
+* Sat Dec 17 2022 Alex Kasko <alex@staticlibs.net> - 14.5.BABEL_2_2_0-1
 - Initial build of BABEL_2_2_0__PG_14_5
 
 * Thu Sep 01 2022 Ondrej Sloup <osloup@redhat.com> - 14.3-10
