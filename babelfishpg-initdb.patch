@@ -1,0 +1,20 @@
+--- postgresql_modified_for_babelfish-BABEL_2_2_0__PG_14_5-old/postgresql-setup-8.7/bin/postgresql-setup.in	2022-01-04 09:22:07.000000000 +0000
++++ postgresql_modified_for_babelfish-BABEL_2_2_0__PG_14_5/postgresql-setup-8.7/bin/postgresql-setup.in	2022-12-23 08:16:14.612193928 +0000
+@@ -167,7 +167,7 @@
+     test -w "$initdb_log" || echo "$initdb_log is not writeable by $USER"
+ 
+     # Initialize the database
+-    initdbcmd+=( "$PGENGINE"/initdb --pgdata="$pgdata" --auth=ident )
++    initdbcmd+=( "$PGENGINE"/initdb --pgdata="$pgdata" --auth-host=md5 )
+     eval "initdbcmd+=( $PGSETUP_INITDB_OPTIONS )"
+     "${initdbcmd[@]}" >> "$initdb_log" 2>&1 < /dev/null
+ 
+@@ -188,6 +188,8 @@
+             return 1
+         fi
+     fi
++    # Preload TDS library
++    sed -i "s|^[[:space:]#]*shared_preload_libraries[[:space:]]=[^#]*|shared_preload_libraries = 'babelfishpg_tds' |g" "$pgdata/postgresql.conf"
+ 
+     test -f "$pgdata/PG_VERSION"
+ }

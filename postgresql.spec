@@ -71,7 +71,7 @@ Epoch: 2
 %global version_babelfish BABEL_2_2_0
 %global version_babelfish_suffix __PG_%{majorversion}_%{minorversion}
 Version: %{version_postgres}.%{version_babelfish}
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -126,15 +126,11 @@ Patch10: postgresql-datalayout-mismatch-on-s390.patch
 Patch12: postgresql-no-libecpg.patch
 # This patch disables deprecated ciphers in the test suite
 Patch14: postgresql-pgcrypto-openssl3-tests.patch
-# Fix compatibility with Python 3.11
-Patch15: postgresql-SPI-s-handling-of-errors-during-transaction-comm.patch
-# Fix compatibility with Perl 5.36
-Patch16: postgresql-pl-perl-test-case.patch
-# Fix compatibility with LLVM 15
-Patch17: postgresql-llvm-15-compat.patch 
 # Fix incorrect argument passing in encode.c
 # https://github.com/babelfish-for-postgresql/postgresql_modified_for_babelfish/pull/35
 Patch100: babelfishpg-pr35-encode-c.patch
+# Preload TDS lib and use md5 in setup script
+Patch101: babelfishpg-initdb.patch
 
 BuildRequires: make
 BuildRequires: lz4-devel
@@ -256,6 +252,7 @@ Requires: systemd
 %{?systemd_requires}
 # We require this to be present for /usr/sbin/runuser when using --initdb (rhbz#2071437)
 Requires: util-linux
+Requires: policycoreutils-python-utils
 # postgresql setup requires runuser from util-linux package
 BuildRequires: util-linux
 # Packages which provide postgresql plugins should build-require
@@ -479,10 +476,8 @@ popd
 %patch9 -p1
 %patch10 -p1
 %patch14 -p1
-#%patch15 -p1
-#%patch16 -p1
-%patch17 -p1
 %patch100 -p1
+%patch101 -p1
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
 
@@ -927,6 +922,7 @@ find_lang_bins pltcl.lst pltcl
 
 %post server
 %systemd_post %service_name
+semanage port -a -t postgresql_port_t -p tcp 1433 >/dev/null 2>&1 || true 
 
 
 %preun server
@@ -1304,12 +1300,17 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Fri Dec 23 2022 Alex Kasko <alex@staticlibs.net - 14.5.BABEL_2_2_0-4
+- Preload TDS library in default postgresql.conf
+- Use md5 auth by default
+- Register port 1433 with selinux
+
 * Sun Dec 18 2022 Alex Kasko <alex@staticlibs.net> - 14.5.BABEL_2_2_0-3
-- copr rebuild with updated version
+- Copr rebuild with updated version
 
 * Sun Dec 18 2022 Alex Kasko <alex@staticlibs.net> - 14.5.BABEL_2_2_0-2
-- make sources download less verbose
-- disable llvmjit
+- Make sources download less verbose
+- Disable llvmjit
 
 * Sat Dec 17 2022 Alex Kasko <alex@staticlibs.net> - 14.5.BABEL_2_2_0-1
 - Initial build of BABEL_2_2_0__PG_14_5
