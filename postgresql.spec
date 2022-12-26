@@ -71,7 +71,7 @@ Epoch: 2
 %global version_babelfish BABEL_2_2_0
 %global version_babelfish_suffix __PG_%{majorversion}_%{minorversion}
 Version: %{version_postgres}.%{version_babelfish}
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1300,6 +1300,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Mon Dec 26 2022 Alex Kasko <alex@staticlibs.net - 14.5.BABEL_2_2_0-5
+- Enable SSL by default to support MS ODBC Driver 18
+
 * Fri Dec 23 2022 Alex Kasko <alex@staticlibs.net - 14.5.BABEL_2_2_0-4
 - Preload TDS library in default postgresql.conf
 - Use md5 auth by default
