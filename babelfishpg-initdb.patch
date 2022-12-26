@@ -1,5 +1,5 @@
---- ./postgresql_modified_for_babelfish-BABEL_2_2_0__PG_14_5/postgresql-setup-8.7/bin/postgresql-setup.in	2022-01-04 09:22:07.000000000 +0000
-+++ ./postgresql_modified_for_babelfish-BABEL_2_2_0__PG_14_5/postgresql-setup-8.7/bin/postgresql-setup.in	2022-12-26 18:50:02.688314995 +0000
+--- postgresql_modified_for_babelfish-BABEL_2_2_0__PG_14_5/postgresql-setup-8.7/bin/postgresql-setup.in	2022-01-04 09:22:07.000000000 +0000
++++ postgresql_modified_for_babelfish-BABEL_2_2_0__PG_14_5/postgresql-setup-8.7/bin/postgresql-setup.in	2022-12-26 18:50:02.688314995 +0000
 @@ -167,7 +167,7 @@
      test -w "$initdb_log" || echo "$initdb_log is not writeable by $USER"
  
