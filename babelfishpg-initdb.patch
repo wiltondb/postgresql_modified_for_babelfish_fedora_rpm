@@ -1,5 +1,5 @@
---- postgresql_modified_for_babelfish-BABEL_2_2_0__PG_14_5/postgresql-setup-8.7/bin/postgresql-setup.in	2022-01-04 09:22:07.000000000 +0000
-+++ postgresql_modified_for_babelfish-BABEL_2_2_0__PG_14_5/postgresql-setup-8.7/bin/postgresql-setup.in	2022-12-26 18:50:02.688314995 +0000
+--- old/postgresql-setup-8.7/bin/postgresql-setup.in	2022-01-04 09:22:07.000000000 +0000
++++ new/postgresql-setup-8.7/bin/postgresql-setup.in	2022-12-26 18:50:02.688314995 +0000
 @@ -167,7 +167,7 @@
      test -w "$initdb_log" || echo "$initdb_log is not writeable by $USER"
  
@@ -9,10 +9,14 @@
      eval "initdbcmd+=( $PGSETUP_INITDB_OPTIONS )"
      "${initdbcmd[@]}" >> "$initdb_log" 2>&1 < /dev/null
  
-@@ -189,6 +189,21 @@
-         fi
-     fi
+@@ -192,6 +192,53 @@
+     test -f "$pgdata/PG_VERSION"
+ }
  
++initbabelfish()
++{
++    info $"Initializing Babelfish extensions"
++
 +    # Preload TDS library
 +    sed -i "s|^[[:space:]#]*shared_preload_libraries[[:space:]]=[^#]*|shared_preload_libraries = 'babelfishpg_tds' |g" "$pgdata/postgresql.conf"
 +
@@ -25,9 +29,45 @@
 +    if [ -f "$pgdata/server.crt" ] && [ -f "$pgdata/server.key" ] ; then
 +        sed -i "s|^[[:space:]#]*ssl[[:space:]]=[^#]*|ssl = on |g" "$pgdata/postgresql.conf"
 +    else
-+        echo "Error generating SSL certificate, SSL is disabled"
++        warn "Error generating SSL certificate, SSL is disabled"
 +    fi
 +
-     test -f "$pgdata/PG_VERSION"
++    # Create and init Babelfish extension, avoid single-user mode
++    # https://www.postgresql.org/message-id/87zj93agba.fsf%40news-spur.riddles.org.uk
++    @bindir@/pg_ctl start -D $pgdata
++    if test $? -ne 0; then
++        error "Babelfish initialization error: pg_ctl failure"
++        return 1
++    fi
++    @bindir@/psql -U "$USER" -d postgres -a << EOF
++CREATE USER babelfish WITH SUPERUSER CREATEDB CREATEROLE PASSWORD 'babelfish' INHERIT;
++CREATE DATABASE babelfish OWNER babelfish;
++\c babelfish
++CREATE EXTENSION IF NOT EXISTS "babelfishpg_tds" CASCADE;
++GRANT ALL ON SCHEMA sys to babelfish;
++ALTER SYSTEM SET babelfishpg_tsql.database_name = 'babelfish';
++SELECT pg_reload_conf();
++CALL sys.initialize_babelfish('babelfish');
++EOF
++    if test $? -ne 0; then
++        error "Babelfish initialization error: psql failure"
++        @bindir@/pg_ctl stop -D $pgdata
++        return 1
++    fi
++    @bindir@/pg_ctl stop -D $pgdata
++
++    info $"Babelfish initialization complete, ODBC TDS connection example:"
++    info $"DRIVER={ODBC Driver 18 for SQL Server};SERVER=127.0.0.1,1433;DATABASE=master;UID=babelfish;PWD=babelfish;TrustServerCertificate=yes"
++    warn $"DB superuser 'babelfish' was created with password 'babelfish', please change the password before allowing remote connections."
++}
+ 
+ initdb()
+ {
+@@ -206,6 +253,7 @@
+         error $"Initializing database failed, possibly see $initdb_log"
+         script_result=1
+     fi
++    initbabelfish
  }
+ 
  
