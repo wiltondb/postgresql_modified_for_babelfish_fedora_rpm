@@ -9,7 +9,7 @@
      eval "initdbcmd+=( $PGSETUP_INITDB_OPTIONS )"
      "${initdbcmd[@]}" >> "$initdb_log" 2>&1 < /dev/null
  
-@@ -192,6 +192,53 @@
+@@ -192,6 +192,54 @@
      test -f "$pgdata/PG_VERSION"
  }
  
@@ -47,6 +47,7 @@
 +GRANT ALL ON SCHEMA sys to babelfish;
 +ALTER SYSTEM SET babelfishpg_tsql.database_name = 'babelfish';
 +SELECT pg_reload_conf();
++ALTER DATABASE babelfish SET babelfishpg_tsql.migration_mode = 'multi-db';
 +CALL sys.initialize_babelfish('babelfish');
 +EOF
 +    if test $? -ne 0; then
@@ -63,7 +64,7 @@
  
  initdb()
  {
-@@ -206,6 +253,7 @@
+@@ -206,6 +254,7 @@
          error $"Initializing database failed, possibly see $initdb_log"
          script_result=1
      fi

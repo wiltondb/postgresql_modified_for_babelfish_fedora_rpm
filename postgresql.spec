@@ -71,7 +71,7 @@ Epoch: 2
 %global version_babelfish BABEL_2_2_1
 %global version_babelfish_suffix __PG_%{majorversion}_%{minorversion}
 Version: %{version_postgres}.%{version_babelfish}
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1300,6 +1300,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Thu Jan  5 2022 Alex Kasko <alex@staticlibs.net - 14.5.BABEL_2_2_1-1
+- Use 'multi-db' mode for DB clusters created with postgresql-setup
+
 * Thu Dec 29 2022 Alex Kasko <alex@staticlibs.net - 14.5.BABEL_2_2_1-1
 - Update to BABEL_2_2_1
 
