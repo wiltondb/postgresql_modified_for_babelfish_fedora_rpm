@@ -9,7 +9,7 @@
      eval "initdbcmd+=( $PGSETUP_INITDB_OPTIONS )"
      "${initdbcmd[@]}" >> "$initdb_log" 2>&1 < /dev/null
  
-@@ -192,6 +192,54 @@
+@@ -192,6 +192,57 @@
      test -f "$pgdata/PG_VERSION"
  }
  
@@ -57,14 +57,17 @@
 +    fi
 +    @bindir@/pg_ctl stop -D $pgdata
 +
-+    info $"Babelfish initialization complete, ODBC TDS connection example:"
-+    info $"DRIVER={ODBC Driver 18 for SQL Server};SERVER=127.0.0.1,1433;DATABASE=master;UID=babelfish;PWD=babelfish;TrustServerCertificate=yes"
++    info $"Babelfish initialization complete, use 'systemctl start postgresql' to start the server"
++    info $"ODBC connection:"
++    info $"DRIVER={ODBC Driver 18 for SQL Server};SERVER=127.0.0.1,1433;UID=babelfish;PWD=babelfish;TrustServerCertificate=yes"
++    info $"JDBC connection with mssql-jdbc:"
++    info $"jdbc:sqlserver://127.0.0.1:1433;trustServerCertificate=true"
 +    warn $"DB superuser 'babelfish' was created with password 'babelfish', please change the password before allowing remote connections."
 +}
  
  initdb()
  {
-@@ -206,6 +254,7 @@
+@@ -206,6 +257,7 @@
          error $"Initializing database failed, possibly see $initdb_log"
          script_result=1
      fi
