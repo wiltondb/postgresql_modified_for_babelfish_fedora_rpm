@@ -71,7 +71,7 @@ Epoch: 2
 %global version_babelfish BABEL_2_3_0
 %global version_babelfish_suffix __PG_%{majorversion}_%{minorversion}
 Version: %{version_postgres}.%{version_babelfish}
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -593,7 +593,6 @@ common_configure_options='
 %if %plpython3
 	--with-python
 %endif
-	--with-extra-version=.%{version_babelfish}
 '
 
 export PYTHON=/usr/bin/python3
@@ -1300,6 +1299,10 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Mon Jan 30 2023 Alex Kasko <alex@staticlibs.net - 14.6.BABEL_2_3_0-2
+- Add allow_system_table_mods to initdb script
+- Remove with-extra-version part of the version string
+
 * Fri Jan 27 2023 Alex Kasko <alex@staticlibs.net - 14.6.BABEL_2_3_0-1
 - Update to BABEL_2_3_0
 
