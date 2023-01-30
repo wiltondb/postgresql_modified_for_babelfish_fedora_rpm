@@ -1,5 +1,5 @@
 --- old/postgresql-setup-8.7/bin/postgresql-setup.in	2022-01-04 09:22:07.000000000 +0000
-+++ new/postgresql-setup-8.7/bin/postgresql-setup.in	2022-12-26 18:50:02.688314995 +0000
++++ new/postgresql-setup-8.7/bin/postgresql-setup.in	2023-01-30 11:25:40.671231953 +0000
 @@ -167,7 +167,7 @@
      test -w "$initdb_log" || echo "$initdb_log is not writeable by $USER"
  
@@ -9,7 +9,7 @@
      eval "initdbcmd+=( $PGSETUP_INITDB_OPTIONS )"
      "${initdbcmd[@]}" >> "$initdb_log" 2>&1 < /dev/null
  
-@@ -192,6 +192,57 @@
+@@ -192,6 +192,58 @@
      test -f "$pgdata/PG_VERSION"
  }
  
@@ -43,11 +43,12 @@
 +CREATE USER babelfish WITH SUPERUSER CREATEDB CREATEROLE PASSWORD 'babelfish' INHERIT;
 +CREATE DATABASE babelfish OWNER babelfish;
 +\c babelfish
++SET allow_system_table_mods = ON;
 +CREATE EXTENSION IF NOT EXISTS "babelfishpg_tds" CASCADE;
 +GRANT ALL ON SCHEMA sys to babelfish;
 +ALTER SYSTEM SET babelfishpg_tsql.database_name = 'babelfish';
-+SELECT pg_reload_conf();
 +ALTER DATABASE babelfish SET babelfishpg_tsql.migration_mode = 'multi-db';
++SELECT pg_reload_conf();
 +CALL sys.initialize_babelfish('babelfish');
 +EOF
 +    if test $? -ne 0; then
@@ -67,7 +68,7 @@
  
  initdb()
  {
-@@ -206,6 +257,7 @@
+@@ -206,6 +258,7 @@
          error $"Initializing database failed, possibly see $initdb_log"
          script_result=1
      fi
