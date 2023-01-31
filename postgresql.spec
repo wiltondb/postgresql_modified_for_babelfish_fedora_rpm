@@ -71,7 +71,7 @@ Epoch: 2
 %global version_babelfish BABEL_2_3_0
 %global version_babelfish_suffix __PG_%{majorversion}_%{minorversion}
 Version: %{version_postgres}.%{version_babelfish}
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -253,6 +253,8 @@ Requires: systemd
 # We require this to be present for /usr/sbin/runuser when using --initdb (rhbz#2071437)
 Requires: util-linux
 Requires: policycoreutils-python-utils
+# certificate generation in postgresql-setup
+Requires: openssl
 # postgresql setup requires runuser from util-linux package
 BuildRequires: util-linux
 # Packages which provide postgresql plugins should build-require
@@ -1299,6 +1301,10 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Tue Jan 31 2023 Alex Kasko <alex@staticlibs.net - 14.6.BABEL_2_3_0-3
+- Add openssl dependency for certificate generation in postgresql-setup
+- Better JDBC URL output from postgresql-setup
+
 * Mon Jan 30 2023 Alex Kasko <alex@staticlibs.net - 14.6.BABEL_2_3_0-2
 - Add allow_system_table_mods to initdb script
 - Remove with-extra-version part of the version string

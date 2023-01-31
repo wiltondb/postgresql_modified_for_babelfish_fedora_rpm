@@ -62,7 +62,7 @@
 +    info $"ODBC connection:"
 +    info $"DRIVER={ODBC Driver 18 for SQL Server};SERVER=127.0.0.1,1433;UID=babelfish;PWD=babelfish;TrustServerCertificate=yes"
 +    info $"JDBC connection with mssql-jdbc:"
-+    info $"jdbc:sqlserver://127.0.0.1:1433;trustServerCertificate=true"
++    info $"jdbc:sqlserver://127.0.0.1:1433;encrypt=true;trustServerCertificate=true;"
 +    warn $"DB superuser 'babelfish' was created with password 'babelfish', please change the password before allowing remote connections."
 +}
  
