@@ -34,7 +34,7 @@
 %{!?test:%global test 1}
 %{!?llvmjit:%global llvmjit 0}
 %{!?external_libpq:%global external_libpq 0}
-%{!?upgrade:%global upgrade 1}
+%{!?upgrade:%global upgrade 0}
 %{!?plpython3:%global plpython3 1}
 %{!?pltcl:%global pltcl 1}
 %{!?plperl:%global plperl 1}
@@ -63,14 +63,14 @@
 
 Summary: PostgreSQL with a patch applied to enable some additional functionality provided by the Babelfish extensions
 Name: postgresql
-Epoch: 2
+Epoch: 1
 %global majorversion 15
-%global minorversion 3
+%global minorversion 4
 %global version_postgres %{majorversion}.%{minorversion}
-%global version_babelfish BABEL_3_2
-%global version_babelfish_suffix __PG_%{majorversion}_%{minorversion}
-%global version_babelfish_revision 9c4b78157a623a82f81f74f2e29c6b78bb3c9937
-Version: %{version_postgres}.%{version_babelfish}
+%global version_wiltondb wiltondb3.3
+%global version_wiltondb_pg_release 1
+%global version_orig_tarball_package 3
+Version: %{version_postgres}.%{version_wiltondb}_%{version_wiltondb_pg_release}
 Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
@@ -91,12 +91,12 @@ Url: https://babelfishpg.org/
 
 %global service_name postgresql.service
 
-Source0: %{version_babelfish}%{version_babelfish_suffix}.tar.gz
-%global source0_sha512 55cde0eb23c1a29fddff8e7236e598f9193b575c107b6eed74f8c6a7ecde923a92d6db14260f567eabb8e64a0bfc3839546ab44b52e074f17a67aaa11d509dce
-%global source0_url https://github.com/babelfish-for-postgresql/postgresql_modified_for_babelfish/archive/%{version_babelfish_revision}.tar.gz
-Source3: postgresql-%{prevversion}.tar.bz2
-%global source3_sha512 70e6f67b5729a23f80b92b04e3fad2e09596b939660e3ddebf499d06af946459a45a019279e05413673e7b65d09a28a0440ed3c2ae565068466ed37e2d4f6f17
-%global source3_url https://src.fedoraproject.org/repo/pkgs/postgresql/postgresql-%{prevversion}.tar.bz2/sha512/%{source3_sha512}/postgresql-%{prevversion}.tar.bz2
+%global source0_filename postgresql-%{majorversion}_%{version_postgres}+%{version_wiltondb}-%{version_wiltondb_pg_release}.orig.tar.xz
+%global source0_dirname postgresql-%{majorversion}-%{version_postgres}+%{version_wiltondb}-%{version_wiltondb_pg_release}
+%global source0_package 1:%{version_postgres}+%{version_wiltondb}-%{version_wiltondb_pg_release}-%{version_orig_tarball_package}~focal
+%global source0_sha512 85f522aace3ad4f462a5cc3a16e0d36df22da059d46f25d066136558d9d2e7ff83afaf1611b845f6bfa385f06fe50a21a200cbfbe8b4bf4970a5cffbc77d4645
+%global source0_url https://launchpad.net/~wiltondb/+archive/ubuntu/wiltondb/+sourcefiles/postgresql-%{majorversion}/%{source0_package}/%{source0_filename}
+Source0: %{source0_filename}
 Source4: Makefile.regress
 Source9: postgresql.tmpfiles.d
 Source10: postgresql.pam
@@ -120,9 +120,6 @@ Patch10: postgresql-datalayout-mismatch-on-s390.patch
 Patch12: postgresql-no-libecpg.patch
 # This patch disables deprecated ciphers in the test suite
 Patch14: postgresql-pgcrypto-openssl3-tests.patch
-
-# Preload TDS lib and use md5 in setup script
-Patch100: babelfishpg-initdb.patch
 
 BuildRequires: make
 BuildRequires: lz4-devel
@@ -245,8 +242,6 @@ Requires: systemd
 # We require this to be present for /usr/sbin/runuser when using --initdb (rhbz#2071437)
 Requires: util-linux
 Requires: policycoreutils-python-utils
-# certificate generation in postgresql-setup
-Requires: openssl
 # postgresql setup requires runuser from util-linux package
 BuildRequires: util-linux
 # Packages which provide postgresql plugins should build-require
@@ -433,13 +428,6 @@ if [ ! -s %{SOURCE0} ] ; then
 fi
 echo "%{source0_sha512}  $(basename %{SOURCE0})" | sha512sum -c
 
-# source3
-if [ ! -s %{SOURCE3} ] ; then
-	rm %{SOURCE3}
-	wget -nv %{source3_url}
-fi
-echo "%{source3_sha512}  $(basename %{SOURCE3})" | sha512sum -c
-
 # source12
 if [ ! -s %{SOURCE12} ] ; then
 	rm %{SOURCE12}
@@ -449,7 +437,7 @@ echo "%{source12_sha512}  $(basename %{SOURCE12})" | sha512sum -c
 
 popd
 
-%setup -q -a 12 -n postgresql_modified_for_babelfish-%{version_babelfish_revision}
+%setup -q -a 12 -n %{source0_dirname}
 %patch1 -p1
 %patch2 -p1
 %patch5 -p1
@@ -461,7 +449,6 @@ popd
 %patch9 -p1
 %patch10 -p1
 %patch14 -p1
-%patch100 -p1
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
 
@@ -1284,6 +1271,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Wed Oct 11 2023 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.3_1-1
+- WiltonDB 3.3 initial build
+
 * Fri Jun 30 2023 Alex Kasko <alex@staticlibs.net - 15.3.BABEL_3_2-1
 - Update to BABEL_3_2_STABLE (9c4b781)
 - Remove PDF docs
