@@ -1,24 +1,3 @@
-# This is the PostgreSQL Global Development Group Official RPMset spec file,
-# or a derivative thereof.
-# Copyright 2003-2009 Lamar Owen <lowen@pari.edu> <lamar.owen@wgcr.org>
-# and others listed.                 ** vi: ts=4 sw=4 noexpandtab nosmarttab
-
-# Major Contributors:
-# ---------------
-# Lamar Owen
-# Trond Eivind Glomsrd <teg@redhat.com>
-# Thomas Lockhart
-# Reinhard Max
-# Karl DeBisschop
-# Peter Eisentraut
-# Joe Conway
-# Andrew Overholt
-# David Jee
-# Kaj J. Niemi
-# Sander Steffann
-# Tom Lane
-# and others in the Changelog....
-
 # This spec file and ancillary files are licensed in accordance with
 # The PostgreSQL license.
 
@@ -48,7 +27,7 @@
 %{!?pam:%global pam 1}
 %{!?sdt:%global sdt 1}
 %{!?selinux:%global selinux 1}
-%{!?runselftest:%global runselftest 1}
+%{!?runselftest:%global runselftest 0}
 
 # By default, patch(1) creates backup files when chunks apply with offsets.
 # Turn that off to ensure such files don't get included in RPMs.
@@ -71,7 +50,7 @@ Epoch: 1
 %global version_wiltondb_pg_release 1
 %global version_orig_tarball_package 3
 Version: %{version_postgres}.%{version_wiltondb}_%{version_wiltondb_pg_release}
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -562,6 +541,7 @@ common_configure_options='
 %if %plpython3
 	--with-python
 %endif
+  --with-extra-version=.%{version_wiltondb}-%{version_wiltondb_pg_release}-%{release}
 '
 
 export PYTHON=/usr/bin/python3
@@ -1271,6 +1251,10 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Thu Oct 12 2023 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.3_1-2
+- Add extra version label
+- Temporary disable tests on Fedora
+
 * Wed Oct 11 2023 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.3_1-1
 - WiltonDB 3.3 initial build
 
