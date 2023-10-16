@@ -47,10 +47,10 @@ Epoch: 1
 %global minorversion 4
 %global version_postgres %{majorversion}.%{minorversion}
 %global version_wiltondb wiltondb3.3
-%global version_wiltondb_pg_release 1
-%global version_orig_tarball_package 3
+%global version_wiltondb_pg_release 2
+%global version_orig_tarball_package 1
 Version: %{version_postgres}.%{version_wiltondb}_%{version_wiltondb_pg_release}
-Release: 2%{?dist}
+Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -73,7 +73,7 @@ Url: https://babelfishpg.org/
 %global source0_filename postgresql-%{majorversion}_%{version_postgres}+%{version_wiltondb}-%{version_wiltondb_pg_release}.orig.tar.xz
 %global source0_dirname postgresql-%{majorversion}-%{version_postgres}+%{version_wiltondb}-%{version_wiltondb_pg_release}
 %global source0_package 1:%{version_postgres}+%{version_wiltondb}-%{version_wiltondb_pg_release}-%{version_orig_tarball_package}~focal
-%global source0_sha512 85f522aace3ad4f462a5cc3a16e0d36df22da059d46f25d066136558d9d2e7ff83afaf1611b845f6bfa385f06fe50a21a200cbfbe8b4bf4970a5cffbc77d4645
+%global source0_sha512 fc515eaf8807d3dae1725e7038ce1b59e7e6ca46c315d600886bb3e7da0bfd7acdeaf48fae951ade706d67f0dee5803c2de2eb7dfda85e21790cb6e3f6827683
 %global source0_url https://launchpad.net/~wiltondb/+archive/ubuntu/wiltondb/+sourcefiles/postgresql-%{majorversion}/%{source0_package}/%{source0_filename}
 Source0: %{source0_filename}
 Source4: Makefile.regress
@@ -541,13 +541,13 @@ common_configure_options='
 %if %plpython3
 	--with-python
 %endif
-  --with-extra-version=.%{version_wiltondb}-%{version_wiltondb_pg_release}-%{release}
 '
 
 export PYTHON=/usr/bin/python3
 
 # These configure options must match main build
-%configure $common_configure_options
+%configure $common_configure_options \
+  --with-extra-version=' (Fedora %{epoch}:%{version}-%{release})'
 
 %make_build world
 
@@ -1251,6 +1251,10 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Mon Oct 16 2023 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.3_2-1
+- Update to wiltondb3.3-2
+- Update extra version label
+
 * Thu Oct 12 2023 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.3_1-2
 - Add extra version label
 - Temporary disable tests on Fedora
