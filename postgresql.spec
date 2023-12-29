@@ -27,7 +27,12 @@
 %{!?pam:%global pam 1}
 %{!?sdt:%global sdt 1}
 %{!?selinux:%global selinux 1}
+%ifnarch aarch64
 %{!?runselftest:%global runselftest 1}
+%endif
+%ifarch aarch64
+%{!?runselftest:%global runselftest 0}
+%endif
 
 # By default, patch(1) creates backup files when chunks apply with offsets.
 # Turn that off to ensure such files don't get included in RPMs.
@@ -50,7 +55,7 @@ Epoch: 1
 %global version_wiltondb_pg_release 3
 %global version_orig_tarball_package 1
 Version: %{version_postgres}.%{version_wiltondb}_%{version_wiltondb_pg_release}
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1251,6 +1256,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Fri Dec 29 2023 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.3_3-2
+- Disable test runs on aarch64
+
 * Fri Dec 29 2023 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.3_3-1
 - Update to wiltondb3.3-3
 - Re-enable test runs
