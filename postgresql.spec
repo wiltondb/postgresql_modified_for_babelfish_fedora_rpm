@@ -27,7 +27,7 @@
 %{!?pam:%global pam 1}
 %{!?sdt:%global sdt 1}
 %{!?selinux:%global selinux 1}
-%{!?runselftest:%global runselftest 0}
+%{!?runselftest:%global runselftest 1}
 
 # By default, patch(1) creates backup files when chunks apply with offsets.
 # Turn that off to ensure such files don't get included in RPMs.
@@ -47,7 +47,7 @@ Epoch: 1
 %global minorversion 4
 %global version_postgres %{majorversion}.%{minorversion}
 %global version_wiltondb wiltondb3.3
-%global version_wiltondb_pg_release 2
+%global version_wiltondb_pg_release 3
 %global version_orig_tarball_package 1
 Version: %{version_postgres}.%{version_wiltondb}_%{version_wiltondb_pg_release}
 Release: 1%{?dist}
@@ -73,7 +73,7 @@ Url: https://babelfishpg.org/
 %global source0_filename postgresql-%{majorversion}_%{version_postgres}+%{version_wiltondb}-%{version_wiltondb_pg_release}.orig.tar.xz
 %global source0_dirname postgresql-%{majorversion}-%{version_postgres}+%{version_wiltondb}-%{version_wiltondb_pg_release}
 %global source0_package 1:%{version_postgres}+%{version_wiltondb}-%{version_wiltondb_pg_release}-%{version_orig_tarball_package}~focal
-%global source0_sha512 fc515eaf8807d3dae1725e7038ce1b59e7e6ca46c315d600886bb3e7da0bfd7acdeaf48fae951ade706d67f0dee5803c2de2eb7dfda85e21790cb6e3f6827683
+%global source0_sha512 f288394a315dabf4291b2f5de07ad6478bf97bacbb55ea0fc633fddf430acdaa85cac2776438a27eb3ab359ccdf6e0e956f22fe2ead57a3bdc959b075ee6e791
 %global source0_url https://launchpad.net/~wiltondb/+archive/ubuntu/wiltondb/+sourcefiles/postgresql-%{majorversion}/%{source0_package}/%{source0_filename}
 Source0: %{source0_filename}
 Source4: Makefile.regress
@@ -1251,6 +1251,10 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Fri Dec 29 2023 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.3_3-1
+- Update to wiltondb3.3-3
+- Re-enable test runs
+
 * Mon Oct 16 2023 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.3_2-1
 - Update to wiltondb3.3-2
 - Update extra version label
