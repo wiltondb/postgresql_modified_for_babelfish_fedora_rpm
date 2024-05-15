@@ -55,7 +55,7 @@ Epoch: 1
 %global version_wiltondb_pg_release 8
 %global version_orig_tarball_package 1
 Version: %{version_postgres}.%{version_wiltondb}_%{version_wiltondb_pg_release}
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1109,6 +1109,7 @@ make -C postgresql-setup-%{setup_version} check
 %dir %{_datadir}/pgsql/contrib
 %dir %{_datadir}/pgsql/extension
 %{_datadir}/pgsql/extension/plpgsql*
+%{_datadir}/pgsql/fix-CVE-2024-4317.sql
 %{_datadir}/pgsql/information_schema.sql
 %{_datadir}/pgsql/postgres.bki
 %{_datadir}/pgsql/snowball_create.sql
@@ -1256,6 +1257,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Wed May 15 2024 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.3_8-2
+- CVE-fix script packaging fix
+
 * Wed May 15 2024 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.3_8-1
 - Update to wiltondb3.3-8
 
