@@ -55,7 +55,7 @@ Epoch: 1
 %global version_wiltondb_pg_release 9
 %global version_orig_tarball_package 1
 Version: %{version_postgres}.%{version_wiltondb}_%{version_wiltondb_pg_release}
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -422,17 +422,17 @@ echo "%{source12_sha512}  $(basename %{SOURCE12})" | sha512sum -c
 popd
 
 %setup -q -a 12 -n %{source0_dirname}
-%patch1 -p1
-%patch2 -p1
-%patch5 -p1
+%patch 1 -p1
+%patch 2 -p1
+%patch 5 -p1
 %if %external_libpq
-%patch8 -p1
+%patch 8 -p1
 %else
-%patch12 -p1
+%patch 12 -p1
 %endif
-%patch9 -p1
-%patch10 -p1
-%patch14 -p1
+%patch 9 -p1
+%patch 10 -p1
+%patch 14 -p1
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
 
@@ -1257,6 +1257,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Thu Jun 27 2024 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.3_9-2
+- Change RPM patch syntax
+
 * Thu Jun 27 2024 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.3_9-1
 - Update to wiltondb3.3-8
 
