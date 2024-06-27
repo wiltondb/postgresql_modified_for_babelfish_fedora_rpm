@@ -52,10 +52,10 @@ Epoch: 1
 %global minorversion 4
 %global version_postgres %{majorversion}.%{minorversion}
 %global version_wiltondb wiltondb3.3
-%global version_wiltondb_pg_release 8
+%global version_wiltondb_pg_release 9
 %global version_orig_tarball_package 1
 Version: %{version_postgres}.%{version_wiltondb}_%{version_wiltondb_pg_release}
-Release: 2%{?dist}
+Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -78,7 +78,7 @@ Url: https://babelfishpg.org/
 %global source0_filename postgresql-%{majorversion}_%{version_postgres}+%{version_wiltondb}-%{version_wiltondb_pg_release}.orig.tar.xz
 %global source0_dirname postgresql-%{majorversion}-%{version_postgres}+%{version_wiltondb}-%{version_wiltondb_pg_release}
 %global source0_package 1:%{version_postgres}+%{version_wiltondb}-%{version_wiltondb_pg_release}-%{version_orig_tarball_package}~focal
-%global source0_sha512 62f448a6467f7838ff9b89dccff77d7a3e848e57647e9f5560ff6c0f788349392071ae666a2c2fbec02641003264970bc5782bcb27b20dea906a18701a7c0b5c
+%global source0_sha512 ecc59d67fa7f0c35add4f207c936873a9cf73d6f7e38561f6a8fe9fb397ae07cf5a63b98637945e6f174a044794c59479ff3003ed5c3925d8fa72723f4128777
 %global source0_url https://launchpad.net/~wiltondb/+archive/ubuntu/wiltondb/+sourcefiles/postgresql-%{majorversion}/%{source0_package}/%{source0_filename}
 Source0: %{source0_filename}
 Source4: Makefile.regress
@@ -1257,6 +1257,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Thu Jun 27 2024 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.3_9-1
+- Update to wiltondb3.3-8
+
 * Wed May 15 2024 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.3_8-2
 - CVE-fix script packaging fix
 
