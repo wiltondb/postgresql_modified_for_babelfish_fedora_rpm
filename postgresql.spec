@@ -52,7 +52,7 @@ Epoch: 1
 %global minorversion 4
 %global version_postgres %{majorversion}.%{minorversion}
 %global version_wiltondb wiltondb3.3
-%global version_wiltondb_pg_release 10
+%global version_wiltondb_pg_release 11
 %global version_orig_tarball_package 1
 Version: %{version_postgres}.%{version_wiltondb}_%{version_wiltondb_pg_release}
 Release: 1%{?dist}
@@ -78,7 +78,7 @@ Url: https://babelfishpg.org/
 %global source0_filename postgresql-%{majorversion}_%{version_postgres}+%{version_wiltondb}-%{version_wiltondb_pg_release}.orig.tar.xz
 %global source0_dirname postgresql-%{majorversion}-%{version_postgres}+%{version_wiltondb}-%{version_wiltondb_pg_release}
 %global source0_package 1:%{version_postgres}+%{version_wiltondb}-%{version_wiltondb_pg_release}-%{version_orig_tarball_package}~focal
-%global source0_sha512 9b0868814c998515d900af04b8179b847c3b103e766d37923c8231296cb85843cfe8f8b761dc3922ae88061a5720bf5bca527fa0251f08805486519043d93c2c
+%global source0_sha512 57942a787edade0f32ca9523bb9490b0b14342f9115ecf35cee6009e91aa770a1853945ea24e7492e03669ff73ad501d87d3dbee5b8ea70bb993ea081c90bccd
 %global source0_url https://launchpad.net/~wiltondb/+archive/ubuntu/wiltondb/+sourcefiles/postgresql-%{majorversion}/%{source0_package}/%{source0_filename}
 Source0: %{source0_filename}
 Source4: Makefile.regress
@@ -1257,6 +1257,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Sun Jul 21 2024 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.3_11-1
+- Update to wiltondb3.3-11
+
 * Sat Jun 29 2024 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.3_10-1
 - Update to wiltondb3.3-10
 
