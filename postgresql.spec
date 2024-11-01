@@ -47,7 +47,7 @@
 
 Summary: PostgreSQL with a patch applied to enable some additional functionality provided by the Babelfish extensions
 Name: postgresql
-Epoch: 1
+Epoch: 2
 %global majorversion 15
 %global minorversion 4
 %global version_postgres %{majorversion}.%{minorversion}
@@ -55,7 +55,7 @@ Epoch: 1
 %global version_wiltondb_pg_release 12
 %global version_orig_tarball_package 1
 Version: %{version_postgres}.%{version_wiltondb}_%{version_wiltondb_pg_release}
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1257,6 +1257,9 @@ make -C postgresql-setup-%{setup_version} check
 
 
 %changelog
+* Fri Nov  1 2024 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.lts_12-2
+- Bump the epoch field to fix the version comparison failure
+
 * Wed Oct 30 2024 WiltonDB Software <info@wiltondb.com - 15.4.wiltondb3.lts_12-1
 - Update to wiltondb3.lts-12
 
